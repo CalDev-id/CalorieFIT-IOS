@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 enum OnboardingStep {
     case name
     case age
     case gender
     case height
+    case weight
+    case activity
 }
 
 struct OnboardingView: View {
@@ -19,56 +22,86 @@ struct OnboardingView: View {
     @State private var inputName: String = ""
     @State private var inputAge: Int?
     @State private var selectedGender: String = "Male"
-    @State private var progress: Double = 1 / 5
-    
+    @State private var progress: Double = 1 / 6.0
+    @State private var inputHeight: Double = 120
+    @State private var inputWeight: Double = 40
+    @State private var selectedActivity: Int = 1
+
+    let progressBarWidth: CGFloat = 250
+
+    @Environment(\.modelContext) private var modelContext
+    @Query private var users: [Users]
+
     var body: some View {
         VStack {
             HStack {
+                Button(action: { if step != .name { prevStep() } }) {
+                    Image(systemName: "arrow.backward")
+                        .font(.system(size: 25))
+                }
+                .foregroundColor(.black)
+                .padding(.trailing)
+
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(height: 10)
+                        .frame(width: progressBarWidth, height: 10)
                         .foregroundColor(Color.gray.opacity(0.3))
 
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 300 * progress, height: 10)
-                        .foregroundColor(.colorGreenPrimary)
+                        .frame(width: progressBarWidth * min(progress, 1), height: 10)
+                        .foregroundColor(Color.colorGreenPrimary)
                 }
-                .frame(width: 280)
+                .frame(width: progressBarWidth)
                 
-                Text("\(Int(progress * 5))/5")
+                Text("\(Int(progress * 6))/6")
                     .font(.headline)
                     .foregroundColor(.black)
                     .padding(.leading)
             }
-            .padding()
-            Text(step == .name ? "What's your name?" : step == .age ? "When's your birthday?" : "What's your gender?")
+            .padding(.vertical)
+            
+            Text(getStepText())
                 .fontWeight(.semibold)
                 .font(.system(size: 25))
-            HStack{
-                Text(inputName)
-                Text(String(inputAge ?? 0))
-                Text(selectedGender)
-            }
 
             Spacer()
             
-            if step == .name {
+            switch step {
+            case .name:
                 NameView(inputName: $inputName)
-//                GenderView()
-            } else if step == .age {
+            case .age:
                 Birthday(inputAge: $inputAge)
-            } else if step == .gender {
+            case .gender:
                 GenderView(selectedGender: $selectedGender)
+            case .height:
+                HeightView(inputHeight: $inputHeight)
+            case .weight:
+                WeightView(inputWeight: $inputWeight)
+            case .activity:
+                ActivityView(selectedActivity: $selectedActivity)
             }
-
+            
             Spacer()
-            PrimaryBTN(name: "Continue") {
-                nextStep()
+            
+            if step == .activity {
+                Text("Submit")
+                    .foregroundColor(.black)
+                    .fontWeight(.semibold)
+                    .frame(width: UIScreen.main.bounds.width - 40, height: 45)
+                    .onTapGesture {
+                        addUserFirstTime()
+                    }
+                    .background(Color.colorGreenPrimary)
+                    .cornerRadius(10)
+            } else {
+                PrimaryBTN(name: "Continue") {
+                    nextStep()
+                }
             }
         }
         .padding()
     }
-    
+
     func nextStep() {
         switch step {
         case .name:
@@ -78,136 +111,72 @@ struct OnboardingView: View {
         case .gender:
             step = .height
         case .height:
+            step = .weight
+        case .weight:
+            step = .activity
+            progress = 1.0
+        case .activity:
             break
         }
-        
-        progress += 1 / 5
+        progress = min(progress + (1 / 6.0), 1)
     }
-}
 
-struct NameView: View {
-    @Binding var inputName: String
-    
-    var body: some View {
-        VStack {
-            TextField("Enter Your Name", text: $inputName)
-                .frame(height: 80)
-                .foregroundColor(.black)
-                .font(.system(size: 30))
-                .multilineTextAlignment(.center)
-                .padding()
-                .background(Color.colorGrayInput)
-                .cornerRadius(5)
-                .shadow(radius: 1)
-                .padding()
+    func prevStep() {
+        switch step {
+        case .activity:
+            step = .weight
+        case .weight:
+            step = .height
+        case .height:
+            step = .gender
+        case .gender:
+            step = .age
+        case .age:
+            step = .name
+        case .name:
+            break
+        }
+        progress = max(progress - (1 / 6.0), 1 / 6.0)
+    }
+
+    func getStepText() -> String {
+        switch step {
+        case .name:
+            return "What's your name?"
+        case .age:
+            return "When's your birthday?"
+        case .gender:
+            return "What's your gender?"
+        case .height:
+            return "How tall are you?"
+        case .weight:
+            return "What's your current weight?"
+        case .activity:
+            return "What's your activity level?"
         }
     }
-}
-struct GenderView: View {
-    @Binding var selectedGender: String
-    @State private var isSelected: Int = 1
-    var body: some View {
-        VStack {
-            HStack{
-                VStack {
-                    ZStack{
-                        Image("male")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            .padding(40)
-                            .background(isSelected == 1 ? Color.colorGreenPrimary : Color.white)
-                            .cornerRadius(100)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 200)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                                    .shadow(radius: 5)
-                            )
-                    }
-                    Text("Male")
-                        .foregroundColor(isSelected == 1 ? Color.colorGreenPrimary : Color.black)
-                }
-                .onTapGesture {
-                    self.isSelected = 1
-                    selectedGender = "Male"
-                }
-                .padding(.trailing, 30)
-                VStack {
-                    Image("female")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                        .padding(40)
-                        .background(isSelected == 2 ? Color.colorGreenPrimary : Color.white)
-                        .cornerRadius(100)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 200)
-                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                                .shadow(radius: 5)
-                        )
-                    Text("Female")
-                        .foregroundColor(isSelected == 2 ? Color.colorGreenPrimary : Color.black)
-                }
-                .onTapGesture {
-                    self.isSelected = 2
-                    selectedGender = "Female"
-                }
+
+    private func addUserFirstTime() {
+        print("sampe sini")
+        withAnimation {
+            let newUser = Users(
+                inputName: inputName,
+                inputAge: inputAge ?? 0,
+                selectedGender: selectedGender,
+                inputHeight: inputHeight,
+                inputWeight: inputWeight
+            )
+            modelContext.insert(newUser)
+
+            do {
+                try modelContext.save()
+                print("✅ Data berhasil disimpan!")
+            } catch {
+                print("❌ Error menyimpan data: \(error)")
             }
-            .padding(.bottom, 20)
-            Text("Prefer not to say")
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
-                .background(Color.white)
-                .foregroundColor(isSelected == 3 ? Color.colorGreenPrimary : Color.black)
-                .font(.system(size: 16, weight: .medium))
-                .cornerRadius(200)
-//                .overlay(
-//                    RoundedRectangle(cornerRadius: 200)
-//                        .stroke(Color.gray, lineWidth: 1) // Outline tombol
-//                )
-                .shadow(color: isSelected == 3 ? Color.colorGreenPrimary : Color.black.opacity(0.2), radius: 2)
-                .onTapGesture {
-                    self.isSelected = 3
-                    selectedGender = "0"
-                }
-
         }
     }
 }
-
-struct Birthday: View {
-    @Binding var inputAge: Int?
-    @State private var selectedDate = Date()
-    
-    var body: some View {
-        VStack{
-            DatePicker("Select Date", selection: $selectedDate, displayedComponents: [.date])
-                .datePickerStyle(WheelDatePickerStyle())
-                .labelsHidden()
-        }
-        .onChange(of: selectedDate) { newDate in
-            inputAge = calculateAge(from: newDate)
-        }
-    }
-
-    // Function to calculate age
-    func calculateAge(from birthDate: Date) -> Int {
-        let calendar = Calendar.current
-        let ageComponents = calendar.dateComponents([.year], from: birthDate, to: Date())
-        return ageComponents.year ?? 0
-    }
-}
-
-struct HeightView: View {
-    @Binding var inputHeight: Double?
-    var body: some View {
-        TextField("Height (cm)", text: .constant(""))
-            .onChange(of: inputHeight) { newValue in
-                if let newValue = newValue {
-                    print("New height: \(newValue)")
-                }
-            }
-    }
-}
-
 
 #Preview {
     OnboardingView()

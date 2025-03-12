@@ -12,7 +12,7 @@ import SwiftData
 struct CalorieFITApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Users.self, // ✅ Tambahkan model Users ke schema
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -22,11 +22,25 @@ struct CalorieFITApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
-
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentViewWrapper()
+                .modelContainer(sharedModelContainer)
         }
-        .modelContainer(sharedModelContainer)
+    }
+}
+
+struct ContentViewWrapper: View {
+    @Query private var users: [Users] // ✅ Gunakan huruf kecil di awal
+
+    var body: some View {
+        NavigationStack {
+            if users.isEmpty {
+                OnboardingView()
+            } else {
+                ContentView()
+            }
+        }
     }
 }
