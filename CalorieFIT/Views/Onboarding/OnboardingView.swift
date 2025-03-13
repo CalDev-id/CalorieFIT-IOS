@@ -18,6 +18,8 @@ enum OnboardingStep {
 }
 
 struct OnboardingView: View {
+    @StateObject private var userViewModel = UserViewModel()
+    
     @State private var step: OnboardingStep = .name
     @State private var inputName: String = ""
     @State private var inputAge: Int?
@@ -88,11 +90,20 @@ struct OnboardingView: View {
                     .foregroundColor(.black)
                     .fontWeight(.semibold)
                     .frame(width: UIScreen.main.bounds.width - 40, height: 45)
-                    .onTapGesture {
-                        addUserFirstTime()
-                    }
                     .background(Color.colorGreenPrimary)
                     .cornerRadius(10)
+                    .onTapGesture {
+                        let newUser = Users( // ✅ Buat objek Users
+                            inputName: inputName,
+                            inputAge: inputAge ?? 0,
+                            selectedGender: selectedGender,
+                            inputHeight: inputHeight,
+                            inputWeight: inputWeight,
+                            selectedActivity: selectedActivity
+                        )
+                        
+                        userViewModel.addUserFirstTime(modelContext: modelContext, user: newUser) // ✅ Panggil fungsi dengan benar
+                    }
             } else {
                 PrimaryBTN(name: "Continue") {
                     nextStep()
@@ -153,27 +164,6 @@ struct OnboardingView: View {
             return "What's your current weight?"
         case .activity:
             return "What's your activity level?"
-        }
-    }
-
-    private func addUserFirstTime() {
-        print("sampe sini")
-        withAnimation {
-            let newUser = Users(
-                inputName: inputName,
-                inputAge: inputAge ?? 0,
-                selectedGender: selectedGender,
-                inputHeight: inputHeight,
-                inputWeight: inputWeight
-            )
-            modelContext.insert(newUser)
-
-            do {
-                try modelContext.save()
-                print("✅ Data berhasil disimpan!")
-            } catch {
-                print("❌ Error menyimpan data: \(error)")
-            }
         }
     }
 }

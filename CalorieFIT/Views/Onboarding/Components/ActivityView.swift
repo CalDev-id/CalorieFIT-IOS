@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ActivityView: View {
     @Binding var selectedActivity: Int
+    
     let activities: [(image: String, title: String)] = [
         ("activity1", "Sedentary"),
         ("activity2", "Lightly Active"),
@@ -23,10 +24,10 @@ struct ActivityView: View {
                 ActivityCard(
                     img: activities[index].image,
                     title: activities[index].title,
-                    isSelected: selectedActivity == index
+                    isSelected: selectedActivity == (index + 1) // ✅ Sesuaikan perbandingan
                 )
                 .onTapGesture {
-                    selectedActivity = index
+                    selectedActivity = index + 1 // ✅ Simpan dengan nilai 1-5
                 }
             }
         }
@@ -36,10 +37,10 @@ struct ActivityView: View {
 struct ActivityCard: View {
     let img: String
     let title: String
-    let isSelected: Bool // Untuk memberi efek border hijau jika dipilih
+    let isSelected: Bool
     
     var body: some View {
-        HStack(){
+        HStack {
             Image(img)
                 .resizable()
                 .frame(width: 50, height: 50)
@@ -54,12 +55,11 @@ struct ActivityCard: View {
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isSelected ? Color.colorGreenPrimary : Color.clear, lineWidth: 2) // ✅ Border hijau jika dipilih
+                .stroke(isSelected ? Color.colorGreenPrimary : Color.clear, lineWidth: 2) // ✅ Border aktif hanya jika dipilih
         )
     }
 }
 
 #Preview {
-    ActivityView(selectedActivity: .constant(0))
+    ActivityView(selectedActivity: .constant(1)) // ✅ Default ke 1 (bukan 0)
 }
-
