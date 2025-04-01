@@ -40,6 +40,7 @@ struct OnboardingView: View {
                 Button(action: { if step != .name { prevStep() } }) {
                     Image(systemName: "arrow.backward")
                         .font(.system(size: 25))
+                        .foregroundColor(step == .height ? Color.white : Color.black)
                 }
                 .foregroundColor(.black)
                 .padding(.trailing)
@@ -51,20 +52,23 @@ struct OnboardingView: View {
 
                     RoundedRectangle(cornerRadius: 5)
                         .frame(width: progressBarWidth * min(progress, 1), height: 10)
-                        .foregroundColor(Color.colorGreenPrimary)
+                        .foregroundColor(step == .height ? Color.white : Color.colorGreenPrimary)
                 }
                 .frame(width: progressBarWidth)
                 
                 Text("\(Int(progress * 6))/6")
                     .font(.headline)
-                    .foregroundColor(.black)
                     .padding(.leading)
+                    .foregroundColor(step == .height ? Color.white : Color.black)
             }
             .padding(.vertical)
             
             Text(getStepText())
                 .fontWeight(.semibold)
-                .font(.system(size: 25))
+                .padding(.horizontal)
+                .font(.system(size: 30))
+                .foregroundColor(step == .height ? Color.white : Color.black)
+                .multilineTextAlignment(.center)
 
             Spacer()
             
@@ -105,12 +109,14 @@ struct OnboardingView: View {
                         userViewModel.addUserFirstTime(modelContext: modelContext, user: newUser) // ✅ Panggil fungsi dengan benar
                     }
             } else {
-                PrimaryBTN(name: "Continue") {
+                SecondaryBTN(name: "Continue") {
                     nextStep()
                 }
             }
         }
         .padding()
+        .background(step == .height ? Color.greenSecondary : Color.white)
+        .navigationBarBackButtonHidden()
     }
 
     func nextStep() {
@@ -155,11 +161,11 @@ struct OnboardingView: View {
         case .name:
             return "What's your name?"
         case .age:
-            return "When's your birthday?"
+            return "What’s your Age?"
         case .gender:
             return "What's your gender?"
         case .height:
-            return "How tall are you?"
+            return "What’s your current weight right now?"
         case .weight:
             return "What's your current weight?"
         case .activity:

@@ -6,84 +6,192 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CalorieChartView: View {
-    @State private var consumedCalories: Double = 1200
+    @Query private var users: [Users]
+    @Environment(\.modelContext) private var modelContext
+    @Query private var dailyNutritions: [DailyNutrition]
+    
     let dailyCalorieGoal: Double
     
-    var todo: () -> Void
+    // Mengambil data hari ini
+    var todayNutrition: DailyNutrition? {
+        let todayID = getCurrentDateID()
+        return dailyNutritions.first { $0.id == todayID }
+    }
+
+    // Mengambil ID Hari Ini
+    func getCurrentDateID() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "ddMMyyyy"
+        return formatter.string(from: Date())
+    }
+    
+    // Data konsumsi hari ini dari SwiftData
+    private var consumedCalories: Double {
+        todayNutrition?.caloryConsumed ?? 0
+    }
+    
+    private var proteinConsumed: Double {
+        todayNutrition?.proteinConsumed ?? 0
+    }
+    
+    private var fatConsumed: Double {
+        todayNutrition?.fatConsumed ?? 0
+    }
+    
+    private var carbsConsumed: Double {
+        todayNutrition?.carbohydrateConsumed ?? 0
+    }
     
     var progress: Double {
         min(consumedCalories / dailyCalorieGoal, 1.0)
     }
     
+    // Target makronutrisi berdasarkan data pengguna
+    var proteinGoal: Double {
+        guard let user = users.first else { return 0 }
+        return BMRViewModel().determineMacronutrients(user: user).protein
+    }
+    
+    var fatGoal: Double {
+        guard let user = users.first else { return 0 }
+        return BMRViewModel().determineMacronutrients(user: user).fat
+    }
+    
+    var carbsGoal: Double {
+        guard let user = users.first else { return 0 }
+        return BMRViewModel().determineMacronutrients(user: user).carbs
+    }
+    
+    var proteinProgress: Double {
+        min(proteinConsumed / proteinGoal, 1.0)
+    }
+    
+    var fatProgress: Double {
+        min(fatConsumed / fatGoal, 1.0)
+    }
+    
+    var carbsProgress: Double {
+        min(carbsConsumed / carbsGoal, 1.0)
+    }
+    
     var body: some View {
         VStack {
-            HStack{
-                HStack {
-                    Image(systemName: "person.fill")
-                    Text("Profile")
+            // Header
+            HStack {
+                Image("profile")
+                    .resizable()
+                    .frame(width: 65, height: 65)
+                    .padding(.trailing, 5)
+                
+                VStack(alignment: .leading) {
+                    Text("Welcome")
+                    Text(users.first?.inputName ?? "John Doe")
+                        .font(.system(size: 19, weight: .regular))
                 }
-                .padding()
-                .background(.green.opacity(0.5))
-                .cornerRadius(40)
                 Spacer()
-                HStack {
-                    Image(systemName: "flame")
-                    Text("Points")
+                
+                ZStack {
+                    Image(systemName: "magnifyingglass")
+                        .padding(15)
                 }
-                .padding()
-                .background(Color.colorGreenPrimary)
-                .cornerRadius(40)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 100)
+                        .stroke(Color.blue.opacity(0.3), lineWidth: 2)
+                )
+                
+                ZStack {
+                    Image(systemName: "bell")
+                        .padding(15)
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 100)
+                        .stroke(Color.blue.opacity(0.3), lineWidth: 2)
+                )
             }
-            .padding(10)
+            .padding(20)
             
+            // Progress Chart
             ZStack {
+                HStack {
+                    Spacer()
+                    Image("avocado")
+                }
+                .offset(y: -50)
+                
                 Circle()
                     .trim(from: 0.0, to: 0.5)
-                    .stroke(Color.gray.opacity(0.3), lineWidth: 20)
-                    .frame(width: 300, height: 300)
+                    .stroke(Color.orangeSecondary, lineWidth: 20)
+                    .frame(width: 224, height: 224)
                     .rotationEffect(.degrees(180))
                 
                 Circle()
                     .trim(from: 0.0, to: CGFloat(progress) * 0.5)
-                    .stroke(Color.colorGreenPrimary, style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                    .frame(width: 300, height: 300)
+                    .stroke(Color.orangePrimary, style: StrokeStyle(lineWidth: 20, lineCap: .round))
+                    .frame(width: 224, height: 224)
                     .rotationEffect(.degrees(180))
                     .animation(.easeOut(duration: 1), value: progress)
                 
                 VStack {
-                    Text("\(Int(consumedCalories))")
-                        .font(.system(size: 50))
-                        .fontWeight(.bold)
-                    Text("of \(Int(dailyCalorieGoal)) calories")
+                    Text("🔥")
+                        .font(.system(size: 45))
+                    Text("\(Int(consumedCalories)) Kcal")
+                        .font(.system(size: 30))
+                        .fontWeight(.semibold)
+                    Text("of \(Int(dailyCalorieGoal)) Kcal")
                         .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundColor(.gray)
-                    
-                    //                    Text("\(Int(progress * 100))%")
-                    //                        .font(.headline)
-                    //                        .foregroundColor(.green)
+                        .foregroundColor(.gray.opacity(0.5))
                 }
                 .offset(y: -30)
             }
-            .padding(.top, 20)
             
-            Button(action: {
-                todo()
-            }) {
-                Text("+ Track eat")
-                    .fontWeight(.bold)
-                    .frame(width: 200, height: 45)
-                    .background(Color.colorGreenPrimary)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+            // Makronutrisi Progress
+            HStack(spacing: 45) {
+                MacronutrientView(name: "Protein", consumed: proteinConsumed, goal: proteinGoal, color: Color.colorGreenPrimary)
+                MacronutrientView(name: "Fats", consumed: fatConsumed, goal: fatGoal, color: Color.orangePrimary)
+                MacronutrientView(name: "Carbs", consumed: carbsConsumed, goal: carbsGoal, color: Color.yellow)
             }
+            .offset(y: -60)
         }
     }
 }
+
+struct MacronutrientView: View {
+    let name: String
+    let consumed: Double
+    let goal: Double
+    let color: Color
     
-// **Preview**
+    var progress: Double {
+        min(consumed / goal, 1.0)
+    }
+    
+    var body: some View {
+        VStack {
+            Text(name)
+                .font(.headline)
+                .foregroundColor(.black)
+            
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(width: 80, height: 10)
+                
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(color)
+                    .frame(width: CGFloat(progress) * 80, height: 10)
+                    .animation(.easeInOut(duration: 0.5), value: progress)
+            }
+            
+            Text("\(Int(consumed))/\(Int(goal))g")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+        }
+    }
+}
+
 #Preview {
-    CalorieChartView(dailyCalorieGoal: 1600, todo: {})
+    CalorieChartView(dailyCalorieGoal: 1600)
 }

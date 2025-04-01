@@ -12,7 +12,8 @@ import SwiftData
 struct CalorieFITApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Users.self, // ✅ Tambahkan model Users ke schema
+            Users.self,
+            DailyNutrition.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -32,14 +33,15 @@ struct CalorieFITApp: App {
 }
 
 struct ContentViewWrapper: View {
-    @Query private var users: [Users] // ✅ Gunakan huruf kecil di awal
+    @Query private var users: [Users]
 
     var body: some View {
         NavigationStack {
             if users.isEmpty {
-                OnboardingView()
+//                OnboardingView()
+                SplashView()
             } else {
-                ContentView()
+                ContentViews()
             }
         }
     }

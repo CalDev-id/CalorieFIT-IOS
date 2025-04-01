@@ -51,5 +51,24 @@ class BMRViewModel: ObservableObject {
             return "Overweight"
         }
     }
+    
+    func determineMacronutrients(user: Users) -> (protein: Double, fat: Double, carbs: Double) {
+        let totalCalories = calculateDailyCalories(user: user)
+        
+        // **Protein**
+        let proteinPerKg: Double = user.selectedActivity >= 3 ? 1.6 : 1.2  // Lebih tinggi jika aktif
+        let proteinGrams = proteinPerKg * user.inputWeight
+        let proteinCalories = proteinGrams * 4
+        
+        // **Fat (Lemak) → 20-30% dari total kalori**
+        let fatCalories = totalCalories * 0.25
+        let fatGrams = fatCalories / 9
+        
+        // **Carbs (Karbohidrat) → Sisa setelah protein & fat dihitung**
+        let remainingCalories = totalCalories - (proteinCalories + fatCalories)
+        let carbGrams = remainingCalories / 4
+        
+        return (proteinGrams, fatGrams, carbGrams)
+    }
 }
 

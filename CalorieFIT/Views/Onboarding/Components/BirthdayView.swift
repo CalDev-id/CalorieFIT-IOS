@@ -9,23 +9,40 @@ import SwiftUI
 
 struct Birthday: View {
     @Binding var inputAge: Int?
-    @State private var selectedDate = Date()
-    
-    var body: some View {
-        VStack{
-            DatePicker("Select Date", selection: $selectedDate, displayedComponents: [.date])
-                .datePickerStyle(WheelDatePickerStyle())
-                .labelsHidden()
-        }
-        .onChange(of: selectedDate) { newDate in
-            inputAge = calculateAge(from: newDate)
-        }
-    }
+    @State private var selectedAge: Int = 19
 
-    // Function to calculate age
-    func calculateAge(from birthDate: Date) -> Int {
-        let calendar = Calendar.current
-        let ageComponents = calendar.dateComponents([.year], from: birthDate, to: Date())
-        return ageComponents.year ?? 0
+    var body: some View {
+        VStack {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.greenSecondary)
+                    .frame(height: 80)
+
+                Picker("Age", selection: $selectedAge) {
+                    ForEach(1...100, id: \.self) { age in
+                        Text("\(age)")
+                            .font(.system(size: selectedAge == age ? 30 : 25))
+                            .foregroundColor(selectedAge == age ? .white : .gray)
+                            .frame(maxWidth: .infinity)
+                            .fontWeight(selectedAge == age ? .semibold : .regular)
+                    }
+                }
+                .pickerStyle(WheelPickerStyle())
+                .frame(height: 150)
+                .scaleEffect(y: 2.6)
+                .scaleEffect(x: 1.4)
+            }
+            .frame(width: 100)
+        }
+        .onAppear {
+            inputAge = selectedAge
+        }
+        .onChange(of: selectedAge) { newValue in
+            inputAge = newValue
+        }
     }
+}
+
+#Preview {
+    Birthday(inputAge: .constant(19))
 }

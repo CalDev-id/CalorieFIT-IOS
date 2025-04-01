@@ -13,7 +13,7 @@ class UserViewModel: ObservableObject {
     func addUserFirstTime(modelContext: ModelContext, user: Users) {
         print("Saving user data...")
 
-        withAnimation { // ✅ Animasi tetap bisa digunakan karena sudah import SwiftUI
+        withAnimation {
             modelContext.insert(user)
             
             do {
