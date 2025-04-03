@@ -168,7 +168,9 @@ struct OnboardingView: View {
                     .cornerRadius(20)
                     .padding(.horizontal)
                     .onTapGesture {
-                        isLoading = true
+                        if (inputName != ""){
+                            isLoading = true
+                        }
                     }
                 } else {
                     SecondaryBTN(name: "Continue", color: step == .height ? .colorGreenRedup : (step == .weight ? .colorOrangeSecondary : .greenSecondary)) {
