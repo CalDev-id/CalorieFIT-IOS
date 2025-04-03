@@ -3,17 +3,17 @@
         "id": 1,
         "food_name": "ayam bakar",
         "calory": 165,
-        "protein": 25,01,
-        "fat": 6,63,
+        "protein": 25.01,
+        "fat": 6.63,
         "carbohydrate": 0
     },
     {
         "id": 2,
         "food_name": "ayam goreng",
         "calory": 260,
-        "protein": 21,93,
-        "fat": 14,55,
-        "carbohydrate": 10,76
+        "protein": 21.93,
+        "fat": 14.55,
+        "carbohydrate": 10.76
     },
     {
         "id": 3,
@@ -43,33 +43,33 @@
         "id": 6,
         "food_name": "bihun goreng",
         "calory": 152,
-        "protein": 5,91,
-        "fat": 5,68,
-        "carbohydrate": 18,26
+        "protein": 5.91,
+        "fat": 5.68,
+        "carbohydrate": 18.26
     },
     {
         "id": 7,
         "food_name": "gado-gado",
         "calory": 132,
-        "protein": 7,14,
-        "fat": 7,41,
-        "carbohydrate": 10,9
+        "protein": 7.14,
+        "fat": 7.41,
+        "carbohydrate": 10.9
     },
     {
         "id": 8,
         "food_name": "kerupuk",
         "calory": 12,
-        "protein": 0,22,
-        "fat": 0,76,
-        "carbohydrate": 1,83
+        "protein": 0.22,
+        "fat": 0.76,
+        "carbohydrate": 1.83
     },
     {
         "id": 9,
         "food_name": "martabak telur",
         "calory": 185,
-        "protein": 9,9,
-        "fat": 7,68,
-        "carbohydrate": 18,52
+        "protein": 9.9,
+        "fat": 7.68,
+        "carbohydrate": 18.52
     },
     {
         "id": 10,
@@ -83,17 +83,17 @@
         "id": 11,
         "food_name": "nasi goreng",
         "calory": 168,
-        "protein": 6,3,
-        "fat": 6,23,
-        "carbohydrate": 21,06
+        "protein": 6.3,
+        "fat": 6.23,
+        "carbohydrate": 21.06
     },
     {
         "id": 12,
         "food_name": "nasi putih",
         "calory": 129,
-        "protein": 2,66,
-        "fat": 0,28,
-        "carbohydrate": 27,9
+        "protein": 2.66,
+        "fat": 0.28,
+        "carbohydrate": 27.9
     },
     {
         "id": 13,
@@ -115,33 +115,33 @@
         "id": 15,
         "food_name": "perkedel kentang",
         "calory": 21,
-        "protein": 0,46,
-        "fat": 1,12,
-        "carbohydrate": 2,48
+        "protein": 0.46,
+        "fat": 1.12,
+        "carbohydrate": 2.48
     },
     {
         "id": 16,
         "food_name": "rendang daging",
         "calory": 195,
-        "protein": 19,68,
-        "fat": 11,07,
-        "carbohydrate": 4,49
+        "protein": 19.68,
+        "fat": 11.07,
+        "carbohydrate": 4.49
     },
     {
         "id": 17,
         "food_name": "roti tawar",
         "calory": 100,
-        "protein": 3,5,
-        "fat": 1,5,
-        "carbohydrate": 18,5
+        "protein": 3.5,
+        "fat": 1.5,
+        "carbohydrate": 18.5
     },
     {
         "id": 18,
         "food_name": "sate ayam",
         "calory": 101,
-        "protein": 8,79,
-        "fat": 6,67,
-        "carbohydrate": 2,19
+        "protein": 8.79,
+        "fat": 6.67,
+        "carbohydrate": 2.19
     },
     {
         "id": 19,
@@ -155,40 +155,40 @@
         "id": 20,
         "food_name": "soto ayam",
         "calory": 312,
-        "protein": 24,01,
-        "fat": 14,92,
-        "carbohydrate": 19,55
+        "protein": 24.01,
+        "fat": 14.92,
+        "carbohydrate": 19.55
     },
     {
         "id": 21,
         "food_name": "tahu goreng",
         "calory": 35,
-        "protein": 2,23,
-        "fat": 2,62,
-        "carbohydrate": 1,36
+        "protein": 2.23,
+        "fat": 2.62,
+        "carbohydrate": 1.36
     },
     {
         "id": 22,
         "food_name": "telur dadar",
         "calory": 94,
-        "protein": 6,48,
-        "fat": 7,33,
-        "carbohydrate": 0,42
+        "protein": 6.48,
+        "fat": 7.33,
+        "carbohydrate": 0.42
     },
     {
         "id": 23,
         "food_name": "tempe goreng",
         "calory": 192,
-        "protein": 11,31,
-        "fat": 12,93,
-        "carbohydrate": 10,15
+        "protein": 11.31,
+        "fat": 12.93,
+        "carbohydrate": 10.15
     },
     {
         "id": 24,
         "food_name": "udang goreng",
         "calory": 287,
-        "protein": 10,58,
-        "fat": 14,64,
-        "carbohydrate": 27,57
+        "protein": 10.58,
+        "fat": 14.64,
+        "carbohydrate": 27.57
     }
 ]

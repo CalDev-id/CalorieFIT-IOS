@@ -28,9 +28,9 @@ struct Birthday: View {
                     }
                 }
                 .pickerStyle(WheelPickerStyle())
-                .frame(height: 150)
-                .scaleEffect(y: 2.6)
-                .scaleEffect(x: 1.4)
+                .frame(height: 180)
+                .scaleEffect(y: 2.4)
+                .scaleEffect(x: 1.2)
             }
             .frame(width: 100)
         }

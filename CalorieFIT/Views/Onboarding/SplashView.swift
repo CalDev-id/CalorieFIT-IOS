@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SplashView: View {
+    @Binding var showSplash: Bool
+    
     var body: some View {
         VStack {
             Image("onboard")
@@ -40,22 +42,23 @@ struct SplashView: View {
             Text("Stay healthy by tracking every meal.")
                 .foregroundStyle(.secondary)
                 .padding(.bottom, 50)
-            NavigationLink(destination: OnboardingView()) {
-                Group{
-                    HStack {
-                        Text("Continue")
-                            .foregroundColor(.white)
-                            .fontWeight(.semibold)
-                        Image("btn1")
-                        Spacer()
-                        Image("btn2")
-                    }
-                    .padding()
+            Group{
+                HStack {
+                    Text("Continue")
+                        .foregroundColor(.white)
+                        .fontWeight(.semibold)
+                    Image("btn1")
+                    Spacer()
+                    Image("btn2")
                 }
-                .frame(width: 180, height: 50)
-                .background(Color.greenSecondary)
-                .cornerRadius(20)
-                .padding(.horizontal)
+                .padding()
+            }
+            .frame(width: 180, height: 50)
+            .background(Color.greenSecondary)
+            .cornerRadius(20)
+            .padding(.horizontal)
+            .onTapGesture {
+                showSplash = !showSplash
             }
         }
         .frame(maxWidth: .infinity)
@@ -63,6 +66,6 @@ struct SplashView: View {
     }
 }
 
-#Preview {
-    SplashView()
-}
+//#Preview {
+//    SplashView()
+//}

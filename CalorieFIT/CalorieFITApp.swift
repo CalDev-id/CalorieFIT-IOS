@@ -38,10 +38,10 @@ struct ContentViewWrapper: View {
     var body: some View {
         NavigationStack {
             if users.isEmpty {
-//                OnboardingView()
-                SplashView()
+                OnboardingView()
+//                SplashView()
             } else {
-                ContentViews()
+                ContentView()
             }
         }
     }

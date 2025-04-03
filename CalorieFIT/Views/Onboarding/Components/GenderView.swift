@@ -15,15 +15,15 @@ struct GenderView: View {
             HStack{
                 VStack {
                     ZStack{
-                        Image("male")
+                        Image("male_1")
                             .resizable()
-                            .frame(width: 50, height: 50)
-                            .padding(40)
-                            .background(isSelected == 1 ? Color.colorGreenPrimary : Color.white)
+                            .frame(width: 120, height: 120)
+                            .padding(5)
+//                            .background(isSelected == 1 ? Color.colorGreenPrimary : Color.white)
                             .cornerRadius(100)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 200)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                    .stroke(isSelected == 1 ? Color.colorGreenPrimary : Color.white, lineWidth: 2)
                                     .shadow(radius: 5)
                             )
                     }
@@ -36,15 +36,15 @@ struct GenderView: View {
                 }
                 .padding(.trailing, 30)
                 VStack {
-                    Image("female")
+                    Image("female_1")
                         .resizable()
-                        .frame(width: 50, height: 50)
-                        .padding(40)
-                        .background(isSelected == 2 ? Color.colorGreenPrimary : Color.white)
+                        .frame(width: 120, height: 120)
+                        .padding(5)
+//                        .background(isSelected == 2 ? Color.colorGreenPrimary : Color.white)
                         .cornerRadius(100)
                         .overlay(
                             RoundedRectangle(cornerRadius: 200)
-                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                .stroke(isSelected == 2 ? Color.colorGreenPrimary : Color.white, lineWidth: 2)
                                 .shadow(radius: 5)
                         )
                     Text("Female")
@@ -75,4 +75,9 @@ struct GenderView: View {
 
         }
     }
+}
+
+#Preview {
+    @Previewable @State var selectedWeight: String = "ayam"
+    GenderView(selectedGender: $selectedWeight)
 }

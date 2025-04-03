@@ -216,109 +216,103 @@ import AudioToolbox
 
 struct HeightView: View {
     @Binding var inputHeight: Double
-    let minHeight: Double = 120
-    let maxHeight: Double = 220
     @State var offset: CGFloat
+    
+    let startHeight = 120
+    let maxHeight = 200
+    let step = 2
+    let stepWidth: CGFloat = 20
     
     init(inputHeight: Binding<Double>) {
         self._inputHeight = inputHeight
-        let middleValue = 50  // Target angka tengah
-        let startHeight = 40
-        let step = 2
-        let middleOffset = CGFloat((middleValue - startHeight) / step) * 20  // Menyesuaikan offset agar tepat di angka 50
+        let middleValue = 160 // Target angka tengah
+        let middleOffset = CGFloat((middleValue - startHeight) / step) * 20
         self._offset = State(initialValue: middleOffset)
     }
     
     var body: some View {
-        VStack{
-            HStack() {
-                Text("\(getWeight())")
+        VStack {
+            HStack {
+                Text("\(getHeight())")
                     .font(.system(size: 50, weight: .bold))
                     .foregroundColor(.white)
                 Text("cm")
                     .foregroundColor(.white)
             }
-            let pickerCount = 6
             
-            customSlider(pickerCount: pickerCount, offset: $offset){
-                HStack(spacing: 0){
-                    ForEach(1...pickerCount,id: \.self){ index in
-                        VStack{
+            let pickerCount = (maxHeight - startHeight) / step / 5
+            
+            customSlider(pickerCount: pickerCount, offset: $offset, startHeight: startHeight, maxHeight: maxHeight, step: step) {
+                HStack(spacing: 0) {
+                    ForEach(0...pickerCount, id: \ .self) { index in
+                        VStack {
                             Rectangle()
                                 .fill(Color.white)
                                 .frame(width: 1, height: 30)
-                            Text("\(30 + (index * 10))")
+                            Text("\(startHeight + (index * 10))")
                                 .font(.caption2)
                                 .foregroundColor(Color.white)
                         }
-                        .frame(width: 20)
+                        .frame(width: stepWidth)
                         
-                        ForEach(1...4, id: \.self){ index in
+                        ForEach(1...4, id: \ .self) { _ in
                             Rectangle()
                                 .fill(Color.white)
                                 .frame(width: 1, height: 15)
-                                .frame(width: 20)
+                                .frame(width: stepWidth)
                         }
                     }
-                    VStack{
-                        Rectangle()
-                            .fill(Color.white)
-                            .frame(width: 1, height: 30)
-                        Text("100")
-                            .font(.caption2)
-                            .foregroundColor(Color.gray)
-                    }
-                    .frame(width: 20)
                 }
-                .offset(x: (getRect().width - 30) / 2)
+                .offset(x: (getRect().width + 17) / 2)
                 .padding(.trailing, getRect().width - 30)
             }
             .frame(height: 50)
-            
             .overlay(
                 Rectangle()
                     .fill(Color.white)
                     .frame(width: 4, height: 50)
-                    .offset(x: 17, y: -30)
+                    .offset(x: 0.8, y: -30)
             )
             .padding()
         }
+        .onChange(of: offset) { _ in
+            inputHeight = Double(getHeight()) ?? 0
+        }
     }
     
-    func getWeight() -> String {
-        let startHeight = 40
-        let step = 2
-        let progress = offset / 20
-        return "\(startHeight + (Int(progress) * step))"
+    func getHeight() -> String {
+        let progress = offset / stepWidth
+        let value = startHeight + (Int(progress) * step)
+        return "\(min(max(value, startHeight), maxHeight))"
     }
 }
 
-func getRect()->CGRect{
-    return UIScreen.main.bounds
-}
-
-struct customSlider<Content: View> : UIViewRepresentable {
+struct customSlider<Content: View>: UIViewRepresentable {
     var content: Content
     @Binding var offset: CGFloat
-    var pickerCount: Int
+    let startHeight: Int
+    let maxHeight: Int
+    let step: Int
     
-    init(pickerCount: Int, offset: Binding<CGFloat>, @ViewBuilder content: @escaping ()->Content){
+    init(pickerCount: Int, offset: Binding<CGFloat>, startHeight: Int, maxHeight: Int, step: Int, @ViewBuilder content: @escaping () -> Content) {
         self.content = content()
         self._offset = offset
-        self.pickerCount = pickerCount
+        self.startHeight = startHeight
+        self.maxHeight = maxHeight
+        self.step = step
     }
     
     func makeCoordinator() -> Coordinator {
-        return customSlider.Coordinator(parent: self)
+        return Coordinator(parent: self)
     }
     
     func makeUIView(context: Context) -> UIScrollView {
         let scrollView = UIScrollView()
         let swiftUIView = UIHostingController(rootView: content).view!
-        let width = CGFloat((pickerCount * 5) * 20) + (getRect().width - 30)
+        let width = CGFloat(((maxHeight - startHeight) / step) * 20) + (getRect().width - 30)
         swiftUIView.frame = CGRect(x: 0, y: 0, width: width, height: 50)
         
-        scrollView.backgroundColor = UIColor.greenSecondary
+        scrollView.backgroundColor = UIColor.clear
         swiftUIView.backgroundColor = .clear
         scrollView.addSubview(swiftUIView)
         scrollView.contentSize = swiftUIView.frame.size
@@ -326,9 +320,7 @@ struct customSlider<Content: View> : UIViewRepresentable {
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.delegate = context.coordinator
         
-        
-        // Mengatur posisi awal slider di tengah berdasarkan angka 50
-        let middleOffset = CGFloat((50 - 40) / 2) * 20
+        let middleOffset = CGFloat((160 - startHeight) / step) * 20
         scrollView.contentOffset.x = middleOffset
         
         return scrollView
@@ -337,28 +329,42 @@ struct customSlider<Content: View> : UIViewRepresentable {
     func updateUIView(_ uiView: UIScrollView, context: Context) {}
     
     class Coordinator: NSObject, UIScrollViewDelegate {
-        var parent : customSlider
+        var parent: customSlider
         init(parent: customSlider) {
             self.parent = parent
         }
         func scrollViewDidScroll(_ scrollView: UIScrollView) {
-            parent.offset = scrollView.contentOffset.x
+            let minOffset: CGFloat = 0
+            let maxOffset: CGFloat = CGFloat((parent.maxHeight - parent.startHeight) / parent.step) * 20
+            
+            DispatchQueue.main.async {
+                self.parent.offset = min(max(scrollView.contentOffset.x, minOffset), maxOffset)
+            }
         }
+
         func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+            snapToNearestValue(scrollView)
+        }
+        func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+            if !decelerate {
+                snapToNearestValue(scrollView)
+            }
+        }
+        func snapToNearestValue(_ scrollView: UIScrollView) {
             let offset = scrollView.contentOffset.x
             let value = (offset / 20).rounded(.toNearestOrAwayFromZero)
             scrollView.setContentOffset(CGPoint(x: CGFloat(value * 20), y: 0), animated: false)
             AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
             AudioServicesPlayAlertSound(1157)
         }
-        func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-            if !decelerate {
-                let offset = scrollView.contentOffset.x
-                let value = (offset / 20).rounded(.toNearestOrAwayFromZero)
-                scrollView.setContentOffset(CGPoint(x: CGFloat(value * 20), y: 0), animated: false)
-                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
-                AudioServicesPlayAlertSound(1157)
-            }
-        }
     }
+}
+
+func getRect() -> CGRect {
+    return UIScreen.main.bounds
+}
+
+
+#Preview {
+    OnboardingView()
 }

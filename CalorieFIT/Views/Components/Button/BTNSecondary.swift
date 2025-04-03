@@ -9,7 +9,9 @@ import SwiftUI
 
 struct SecondaryBTN: View {
     var name: String
+    var color: Color
     var todo: () -> Void  // Change todo to a closure
+    
 
     var body: some View {
         Button(action: {
@@ -26,12 +28,12 @@ struct SecondaryBTN: View {
             .padding()
         }
         .frame(width: 180, height: 50)
-        .background(Color.greenSecondary)
+        .background(color)
         .cornerRadius(20)
         .padding(.horizontal)
     }
 }
 
 #Preview {
-    SecondaryBTN(name: "Continue", todo: {})
+    SecondaryBTN(name: "Continue", color: .blue, todo: {})
 }
