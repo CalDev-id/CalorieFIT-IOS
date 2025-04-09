@@ -9,29 +9,67 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var capturedImage: UIImage? = nil
+    @State private var isPresenting: Bool = false
 
     var body: some View {
-        TabView{
-            HomeScreen(capturedImage: $capturedImage, classifier: ImageClassifier())
-                .tabItem {
+        ZStack {
+            TabView{
+                HomeScreen(isPresenting: $isPresenting, capturedImage: $capturedImage, classifier: ImageClassifier())
+                    .tabItem {
+                        Image("home")
+                    }
+                ProfileView()
+                    .tabItem {
+                        Image("history")
+                    }
+                Button(action: {
+                    // Call the closure when the button is pressed
+                }){
                     Image(systemName: "house")
                     Text("Home")
                 }
-            ProfileView()
-                .tabItem {
-                    Image(systemName: "person.circle")
-                    Text("Profile")
+                ProfileView()
+                    .tabItem {
+                        Image("graph")
+                    }
+                ProfileView()
+                    .tabItem {
+                        Image("user")
+                        
+                    }
+                
+            }
+            .accentColor(Color.colorGreenPrimary)
+            .background(.white)
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        isPresenting = true
+                    }) {
+                        Image(systemName: "plus")
+                            .padding(15)
+                            .foregroundColor(Color.white)
+                            
+                    }
+                    .frame(width: 55, height: 55)
+                    .background(Color.colorGreenPrimary)
+                    .cornerRadius(100)
+                    .padding(.bottom, 20)
+                    
+                    Spacer()
                 }
-            
+            }
         }
-        .accentColor(Color.colorGreenPrimary)
-                .background(.white)
     }
 }
 
 #Preview {
     ContentView()
 }
+
+
 
 //import SwiftUI
 //

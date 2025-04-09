@@ -88,28 +88,33 @@ struct CalorieChartView: View {
                 
                 VStack(alignment: .leading) {
                     Text("Welcome")
+                        .foregroundColor(.gray)
                     Text(users.first?.inputName ?? "John Doe")
                         .font(.system(size: 19, weight: .regular))
                 }
                 Spacer()
                 
-                ZStack {
-                    Image(systemName: "magnifyingglass")
-                        .padding(15)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 100)
-                        .stroke(Color.blue.opacity(0.3), lineWidth: 2)
-                )
-                
-                ZStack {
-                    Image(systemName: "bell")
-                        .padding(15)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 100)
-                        .stroke(Color.blue.opacity(0.3), lineWidth: 2)
-                )
+//                ZStack {
+//                    Image(systemName: "magnifyingglass")
+//                        .font(.system(size: 20))
+//                        .padding(8)
+//                }
+//                .overlay(
+//                    RoundedRectangle(cornerRadius: 100)
+//                        .stroke(Color.black.opacity(0.3), lineWidth: 2)
+//                )
+//                
+//                ZStack {
+//                    Image(systemName: "bell")
+//                        .font(.system(size: 20))
+//                        .padding(8)
+//                }
+//                .overlay(
+//                    RoundedRectangle(cornerRadius: 100)
+//                        .stroke(Color.black.opacity(0.3), lineWidth: 2)
+//                )
+                Text("Level 1")
+                    .font(.system(size: 17, weight: .medium))
             }
             .padding(20)
             

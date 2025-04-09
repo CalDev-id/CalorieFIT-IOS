@@ -5,92 +5,6 @@
 //  Created by Heical Chandra on 12/03/25.
 //
 
-//import SwiftUI
-//import SwiftData
-//
-//struct HomeScreen: View {
-//    @Query private var users: [Users]
-//    @StateObject private var bmrViewModel = BMRViewModel()
-//    
-//    @State private var isNavigatingToImageView = false
-//    @State private var isPresenting = false
-//    @State private var isImagePickerPresented = false
-//    @State private var uiImage: UIImage?
-//    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-//    
-//    @ObservedObject var classifier: ImageClassifier
-//    
-//    var body: some View {
-//        NavigationStack {
-//            VStack {
-//                if let user = users.first {
-//                    let dailyCalories = bmrViewModel.calculateDailyCalories(user: user)
-//                    
-//                    CalorieChartView(dailyCalorieGoal: dailyCalories)
-//                    
-//                    Button(action: {
-//                        isPresenting = true
-//                    }) {
-//                        Text("+ Track eat")
-//                            .fontWeight(.bold)
-//                            .frame(width: 200, height: 45)
-//                            .background(Color.colorGreenPrimary)
-//                            .foregroundColor(.white)
-//                            .cornerRadius(10)
-//                    }
-//                    .actionSheet(isPresented: $isPresenting) {
-//                        ActionSheet(
-//                            title: Text("Take a photo or select from library"),
-//                            message: Text(""),
-//                            buttons: [
-//                                .default(Text("Camera"), action: {
-//                                    sourceType = .camera
-//                                    isImagePickerPresented = true
-//                                }),
-//                                .default(Text("Photo Library"), action: {
-//                                    sourceType = .photoLibrary
-//                                    isImagePickerPresented = true
-//                                }),
-//                                .cancel()
-//                            ]
-//                        )
-//                    }
-//                    .sheet(isPresented: $isImagePickerPresented) {
-//                        ImagePicker(
-//                            uiImage: $uiImage,
-//                            isPresenting: $isImagePickerPresented,
-//                            sourceType: $sourceType
-//                        )
-//                        .onDisappear {
-//                            if let selectedImage = uiImage {
-//                                classifier.detect(uiImage: selectedImage)
-//                                isNavigatingToImageView = true
-//                            }
-//                        }
-//                    }
-//
-//                    NavigationLink(
-//                        destination: FoodDetectView(classifier: classifier, uiImage: $uiImage),
-//                        isActive: $isNavigatingToImageView
-//                    ) {
-//                        EmptyView()
-//                    }
-//                    Spacer()
-//                    
-//                } else {
-//                    Text("No user data available")
-//                }
-//            }
-//            .padding()
-//        }
-//    }
-//}
-//
-//#Preview {
-//    HomeScreen(classifier: ImageClassifier())
-//}
-
-
 import SwiftUI
 import SwiftData
 import Vision
@@ -99,7 +13,7 @@ import CoreML
 struct HomeScreen: View {
     @Query private var users: [Users]
     @StateObject private var bmrViewModel = BMRViewModel()
-    @State private var isPresenting: Bool = false
+    @Binding var isPresenting: Bool
     @State private var isImagePickerPresented: Bool = false
     @State private var isPhotoLibrary: Bool = false
     
@@ -134,14 +48,14 @@ struct HomeScreen: View {
                     
                     CalorieChartView(dailyCalorieGoal: dailyCalories)
                     
-                    Button(action: { isPresenting = true }) {
-                        Text("+ Track eat")
-                            .fontWeight(.bold)
-                            .frame(width: 200, height: 45)
-                            .background(Color.green)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
+//                    Button(action: { isPresenting = true }) {
+//                        Text("+ Track eat")
+//                            .fontWeight(.bold)
+//                            .frame(width: 200, height: 45)
+//                            .background(Color.green)
+//                            .foregroundColor(.white)
+//                            .cornerRadius(10)
+//                    }
                     .confirmationDialog("Choose an option", isPresented: $isPresenting, titleVisibility: .visible) {
                         //                        Button("Camera") { isImagePickerPresented = true }
                         Button("Camera") {
