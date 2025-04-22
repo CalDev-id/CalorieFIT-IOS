@@ -15,7 +15,7 @@ class NutritionViewModel: ObservableObject {
             do {
                 let data = try Data(contentsOf: url)
                 let jsonString = String(data: data, encoding: .utf8) ?? "Invalid JSON"
-                print("📜 JSON Content: \(jsonString)") // Debugging JSON content sebelum parsing
+                /*print("📜 JSON Content: \(jsonString)")*/ // Debugging JSON content sebelum parsing
                 
                 let decoder = JSONDecoder()
                 let loadedProducts = try decoder.decode([NutritionModel].self, from: data)

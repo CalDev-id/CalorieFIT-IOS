@@ -72,7 +72,7 @@ struct ProfileView: View {
                 .frame(height: 50)
                 .background(.white)
 //                .padding(.top, 55)
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 10)
                 
             }
             .background(.white)

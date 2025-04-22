@@ -200,3 +200,4 @@ struct MacronutrientView: View {
 #Preview {
     CalorieChartView(dailyCalorieGoal: 1600)
 }
+

@@ -7,13 +7,13 @@
 
 import SwiftData
 import Foundation
+import UIKit
 
 class NutritionDataManager {
     let context: ModelContext
 
     init(context: ModelContext) {
         self.context = context
-//        print("🟢 ModelContext berhasil diinisialisasi!")
     }
 
     // Mendapatkan ID Hari Ini (ddMMyyyy)
@@ -23,13 +23,12 @@ class NutritionDataManager {
         return formatter.string(from: Date())
     }
 
-    // Cek dan Update atau Simpan Data Baru
-    func updateOrInsertNutrition(calory: Double, protein: Double, fat: Double, carbohydrate: Double) {
+    func updateOrInsertNutrition(food_name: String, calory: Double, protein: Double, fat: Double, carbohydrate: Double, image: UIImage?) {
         let todayID = getCurrentDateID()
         print("🟢 Menyimpan data dengan ID: \(todayID)")
 
         let fetchDescriptor = FetchDescriptor<DailyNutrition>(predicate: #Predicate { $0.id == todayID })
-        
+
         do {
             if let existingData = try context.fetch(fetchDescriptor).first {
                 existingData.caloryConsumed += calory
@@ -46,15 +45,29 @@ class NutritionDataManager {
                     carbohydrate: carbohydrate
                 )
                 context.insert(newNutrition)
+                // streak + 1
+                
                 print("🆕 Data baru dibuat dan dimasukkan!")
             }
-            
+
+            // 🔄 Tambahkan ke model FoodHistory
+            let base64Image = image?.base64
+            let foodHistory = FoodHistory(
+                food_name: food_name,
+                calory: calory,
+                protein: protein,
+                fat: fat,
+                carbohydrate: carbohydrate,
+                image: base64Image
+            )
+            context.insert(foodHistory)
+            print("📜 FoodHistory berhasil disimpan.")
+
             try context.save()
-            print("✅ Data berhasil disimpan ke database!")
+            print("✅ Semua data berhasil disimpan ke database!")
+
         } catch {
             print("❌ Gagal menyimpan data: \(error)")
         }
     }
-
-
 }

@@ -18,7 +18,7 @@ struct ContentView: View {
                     .tabItem {
                         Image("home")
                     }
-                ProfileView()
+                FoodHistoryView()
                     .tabItem {
                         Image("history")
                     }
@@ -28,7 +28,7 @@ struct ContentView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
-                ProfileView()
+                GamificationView()
                     .tabItem {
                         Image("graph")
                     }
@@ -65,9 +65,9 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}
 
 
 

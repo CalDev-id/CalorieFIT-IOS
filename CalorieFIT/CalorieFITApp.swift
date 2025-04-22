@@ -13,7 +13,9 @@ struct CalorieFITApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Users.self,
-            DailyNutrition.self
+            DailyNutrition.self,
+            FoodHistory.self,
+//            UserProgress.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

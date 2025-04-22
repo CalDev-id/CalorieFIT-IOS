@@ -89,7 +89,8 @@ struct FoodDetectView: View {
     @Binding var detectedObjects: [DetectedObject]
     @Binding var showResultSheet: Bool
     @StateObject var viewModel = NutritionViewModel()
-    
+//    @EnvironmentObject var gamificationVM: GamificationViewModel
+
     //graph
     @Query private var users: [Users]
     @Query private var dailyNutritions: [DailyNutrition]
@@ -243,51 +244,25 @@ struct FoodDetectView: View {
                                 .foregroundColor(.gray)
                         }
                         
-//                        SecondaryBTN(name: "Confirm", color: Color.colorGreenPrimary) {
-//                            if let matched = matchedNutrition {
-//                                nutritionManager.updateOrInsertNutrition(
+                        SecondaryBTN(name: "Confirm", color: Color.colorGreenPrimary) {
+                            if let matched = matchedNutrition {
+                                nutritionManager.updateOrInsertNutrition(
+                                    food_name: matched.food_name ?? "",
+                                    calory: matched.calory ?? 0,
+                                    protein: matched.protein ?? 0,
+                                    fat: matched.fat ?? 0,
+                                    carbohydrate: matched.carbohydrate ?? 0,
+                                    image: capturedImage
+                                )
+//                                let scan = FoodHistory(
+//                                    food_name: matched.food_name ?? "",
 //                                    calory: matched.calory ?? 0,
 //                                    protein: matched.protein ?? 0,
 //                                    fat: matched.fat ?? 0,
 //                                    carbohydrate: matched.carbohydrate ?? 0
 //                                )
-//                            }
-//                            dismiss()
-//                        }
-                        HStack{
-                            Image("avocado2")
-                            VStack(alignment:.leading){
-                                Text("Health body comes with good nutrition")
-                                    .font(.system(size: 15))
-                                Text("Get good nutrition now!")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.gray)
-                            }
-                            .padding(.horizontal, 7)
-                            Image(systemName: "arrow.right")
-                                .font(.system(size: 20))
-                                .frame(width: 25, height: 25)
-                                .padding(10)
-                                .background(.yellow.opacity(0.6))
-                                .foregroundColor(.black)
-                                .cornerRadius(100)
-                            
-                        }
-                        .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(Color.black.opacity(0.3), lineWidth: 2)
-                        )
-                        .padding(.horizontal, 25)
-                        .onTapGesture {
-                            if let matched = matchedNutrition {
-                                nutritionManager.updateOrInsertNutrition(
-                                    calory: matched.calory ?? 0,
-                                    protein: matched.protein ?? 0,
-                                    fat: matched.fat ?? 0,
-                                    carbohydrate: matched.carbohydrate ?? 0
-                                )
+//                                
+//                                gamificationVM.completeScan(scan: scan)
                             }
                             dismiss()
                         }
@@ -296,21 +271,6 @@ struct FoodDetectView: View {
                     .frame(height: 400)
                     .background(.white)
                     .clipShape(RoundedCorners(radius: 30, corners: [.topLeft, .topRight]))
-                    
-                    
-                    
-                    
-                    //                else {
-                    //                    VStack {
-                    //                        Text("Nothing could be detected.")
-                    //                        Button("Try again!") {
-                    //                            capturedImage = nil
-                    //                            detectedObjects = []
-                    //                            showResultSheet.toggle()
-                    //                        }
-                    //                        .buttonStyle(.borderedProminent)
-                    //                    }
-                    //                }
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -357,8 +317,6 @@ struct MacronutrientDetailView: View {
                 .resizable()
                 .frame(width: UIScreen.main.bounds.width * 0.2)
                 .frame(height: 65)
-//                .background(.red)
-//                .padding(.leading, -10)
             VStack{
                 HStack{
                     Text(name)
@@ -386,6 +344,5 @@ struct MacronutrientDetailView: View {
         .padding(.trailing, 25)
         .padding(.leading, 10)
         .frame(maxWidth: .infinity)
-//        .background(.blue)
     }
 }
