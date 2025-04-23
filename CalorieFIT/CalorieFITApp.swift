@@ -15,7 +15,7 @@ struct CalorieFITApp: App {
             Users.self,
             DailyNutrition.self,
             FoodHistory.self,
-//            UserProgress.self
+            UserProgress.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

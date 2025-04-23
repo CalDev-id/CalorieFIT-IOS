@@ -46,6 +46,11 @@ class NutritionDataManager {
                 )
                 context.insert(newNutrition)
                 // streak + 1
+                let fetchProgress = FetchDescriptor<UserProgress>()
+                if let updateProgress = try context.fetch(fetchProgress).first {
+                    updateProgress.streak += 1
+                    print("🔥 Streak +1")
+                }
                 
                 print("🆕 Data baru dibuat dan dimasukkan!")
             }

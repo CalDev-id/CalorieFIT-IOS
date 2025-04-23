@@ -6,34 +6,43 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct GamificationView: View {
-//    @ObservedObject var viewModel: GamificationViewModel
+    @Query var progressList: [UserProgress]
+    @StateObject var viewModel: GamificationViewModel
 
     var body: some View {
-//        VStack(spacing: 16) {
-//            Text("Level \(viewModel.userProgress.level)")
-//                .font(.largeTitle)
-//            ProgressView(value: Float(viewModel.userProgress.xp), total: Float(viewModel.userProgress.level * 100))
-//                .padding()
-//            
-//            Text("🔥 Streak: \(viewModel.userProgress.streak) days")
-//                .font(.headline)
-//
-//            VStack(alignment: .leading) {
-//                Text("🎯 Today's Challenges")
-//                    .font(.title2.bold())
-//                ForEach(viewModel.dailyChallenges, id: \.self) { challenge in
-//                    Text("• \(challenge)")
-//                        .padding(.leading, 8)
-//                }
-//            }
-//            .padding()
-//            .background(Color.yellow.opacity(0.2))
-//            .cornerRadius(10)
-//
-//        }
-//        .padding()
-        Text("GamificationView")
+        VStack(alignment: .leading, spacing: 16) {
+            if let progress = progressList.first {
+                Text("🎯 XP: \(progress.xp)")
+                ProgressView(value: Double(progress.xp), total: 100)
+                Text("🆙 Level: \(progress.level)")
+                Text("🔥 Streak: \(progress.streak) hari")
+            } else {
+                Text("Belum ada data progress ditemukan.")
+                    .foregroundColor(.gray)
+            }
+
+            Divider()
+
+            Text("🎯 Daily Quests")
+                .font(.headline)
+
+            ForEach(viewModel.dailyQuests) { quest in
+                HStack {
+                    Text(quest.name)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(quest.isCompleted ? .green : .red)
+                        .cornerRadius(10)
+                }
+            }
+
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("Progress Kamu")
     }
 }

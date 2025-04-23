@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @State private var capturedImage: UIImage? = nil
     @State private var isPresenting: Bool = false
+    @Environment(\.modelContext) var context
 
     var body: some View {
         ZStack {
@@ -22,13 +24,8 @@ struct ContentView: View {
                     .tabItem {
                         Image("history")
                     }
-                Button(action: {
-                    // Call the closure when the button is pressed
-                }){
-                    Image(systemName: "house")
-                    Text("Home")
-                }
-                GamificationView()
+                Text(" ")
+                GamificationView(viewModel: GamificationViewModel(context: context))
                     .tabItem {
                         Image("graph")
                     }

@@ -40,6 +40,7 @@ struct OnboardingView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [Users]
+    @Query private var progressList: [UserProgress]
 
     var body: some View {
         if !showSplash {
@@ -92,6 +93,12 @@ struct OnboardingView: View {
                         )
                         
                         userViewModel.addUserFirstTime(modelContext: modelContext, user: newUser)
+                        
+                        if progressList.isEmpty {
+                            let newProgress = UserProgress()
+                            modelContext.insert(newProgress)
+                            print("✅ UserProgress pertama dibuat.")
+                        }
                     }
                 }
             }
