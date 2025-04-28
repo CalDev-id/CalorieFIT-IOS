@@ -7,21 +7,6 @@
 
 import Foundation
 import SwiftData
-//
-//@Model
-//class UserProgress {
-//    var xp: Int
-//    var level: Int
-//    var streak: Int
-//
-//    init(xp: Int = 0, level: Int = 1, streak: Int = 0) {
-//        self.xp = xp
-//        self.level = level
-//        self.streak = streak
-//    }
-//
-//}
-
 
 @Model
 class UserProgress {

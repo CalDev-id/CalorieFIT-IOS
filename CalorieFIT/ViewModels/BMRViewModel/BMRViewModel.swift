@@ -52,6 +52,10 @@ class BMRViewModel: ObservableObject {
         }
     }
     
+    func userBMI(user: Users) -> Double {
+        return user.inputWeight / pow(user.inputHeight / 100, 2)
+    }
+    
     func determineMacronutrients(user: Users) -> (protein: Double, fat: Double, carbs: Double) {
         let totalCalories = calculateDailyCalories(user: user)
         

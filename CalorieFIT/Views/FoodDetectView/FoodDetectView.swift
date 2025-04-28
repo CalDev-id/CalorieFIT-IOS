@@ -89,6 +89,8 @@ struct FoodDetectView: View {
     @Binding var detectedObjects: [DetectedObject]
     @Binding var showResultSheet: Bool
     @StateObject var viewModel = NutritionViewModel()
+    @State private var navigateToContentView = false
+
 //    @EnvironmentObject var gamificationVM: GamificationViewModel
 
     //graph
@@ -263,6 +265,29 @@ struct FoodDetectView: View {
                             }
                             dismiss()
                         }
+//                        
+//                        NavigationLink(destination: ContentView(), isActive: $navigateToContentView) {
+//                            EmptyView()
+//                        }
+//
+//                        SecondaryBTN(name: "Confirm", color: Color.colorGreenPrimary) {
+//                            if let matched = matchedNutrition {
+//                                nutritionManager.updateOrInsertNutrition(
+//                                    food_name: matched.food_name,
+//                                    calory: matched.calory ?? 0,
+//                                    protein: matched.protein ?? 0,
+//                                    fat: matched.fat ?? 0,
+//                                    carbohydrate: matched.carbohydrate ?? 0,
+//                                    image: capturedImage
+//                                )
+//                                if let update = matchedNutrition {
+//                                    GMViewModel.updateProgress(food_name: matched.food_name, calory: matched.calory ?? 0, protein: matched.protein ?? 0, fat: matched.fat ?? 0, carbohydrate: matched.carbohydrate ?? 0)
+//                                }
+//                                
+//                                navigateToContentView = true // ini yang memicu navigasi
+//                                
+//                            }
+//                        }
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 400)

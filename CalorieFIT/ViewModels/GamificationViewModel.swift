@@ -9,19 +9,28 @@
 import Foundation
 import SwiftData
 import Combine
-class GamificationViewModel: ObservableObject {
-    let context: ModelContext
 
-    init(context: ModelContext) {
+class GamificationViewModel: ObservableObject {
+    var context: ModelContext? {
+        didSet {
+            if context != nil {
+                loadQuestsFromUserDefaults()
+            }
+        }
+    }
+
+    init(context: ModelContext? = nil) {
         self.context = context
-        loadQuestsFromUserDefaults()
+        if context != nil {
+            loadQuestsFromUserDefaults()
+        }
     }
 
     enum QuestType: String, CaseIterable, Identifiable, Codable {
         case proteinOver10 = "Scan makanan tinggi protein (>10g)"
         case fatUnder5 = "Scan makanan rendah lemak (<5g)"
         case calorieUnder300 = "Scan makanan dengan <300 kalori"
-        case carbOver30 = "Scan makanan tinggi karbo (>30g)"
+        case carbOver30 = "Scan makanan tinggi karbo (>10g)"
         case proteinOver15 = "Scan makanan dengan protein >15g"
 
         var id: String { rawValue }
@@ -31,7 +40,7 @@ class GamificationViewModel: ObservableObject {
             case .proteinOver10: return protein > 10
             case .fatUnder5: return fat < 5
             case .calorieUnder300: return cal < 300
-            case .carbOver30: return carb > 30
+            case .carbOver30: return carb > 10
             case .proteinOver15: return protein > 15
             }
         }
@@ -50,6 +59,25 @@ class GamificationViewModel: ObservableObject {
             self.isCompleted = isCompleted
         }
     }
+    private let lastResetKey = "lastQuestReset"
+
+    private func shouldResetQuests() -> Bool {
+        if let lastReset = UserDefaults.standard.object(forKey: lastResetKey) as? Date {
+            return !Calendar.current.isDateInToday(lastReset)
+        }
+        return true
+    }
+    
+    func resetDailyQuestsIfNeeded() {
+        if shouldResetQuests() {
+            generateDailyQuests()
+            UserDefaults.standard.set(Date(), forKey: lastResetKey)
+        } else {
+            loadQuestsFromUserDefaults()
+        }
+    }
+
+
 
     @Published var dailyQuests: [Quest] = [] {
         didSet {
@@ -82,7 +110,7 @@ class GamificationViewModel: ObservableObject {
 
     func updateProgress(food_name: String, calory: Double, protein: Double, fat: Double, carbohydrate: Double) {
         do {
-            guard let userProgress = try context.fetch(FetchDescriptor<UserProgress>()).first else { return }
+            guard let userProgress = try context?.fetch(FetchDescriptor<UserProgress>()).first else { return }
 
             var updatedQuests = dailyQuests
             var xpGained = 0
@@ -107,7 +135,7 @@ class GamificationViewModel: ObservableObject {
                 print("🏆 Naik level ke \(userProgress.level)!")
             }
 
-            try context.save()
+            try context?.save()
         } catch {
             print("❌ Gagal memperbarui progress: \(error)")
         }

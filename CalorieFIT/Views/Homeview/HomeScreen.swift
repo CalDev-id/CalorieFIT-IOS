@@ -16,6 +16,9 @@ struct HomeScreen: View {
     @Binding var isPresenting: Bool
     @State private var isImagePickerPresented: Bool = false
     @State private var isPhotoLibrary: Bool = false
+    @State private var isSearchFood: Bool = false
+    @StateObject var productViewModel = FoodProductViewModel()
+
     
     @State private var detectedObjects: [DetectedObject] = []
     @State private var showResultSheet: Bool = false
@@ -28,9 +31,6 @@ struct HomeScreen: View {
     
     @StateObject var viewModel = NutritionViewModel()
 
-//    let cameraService = CameraService()
-    
-    // Safely loading ML Model
     let model: Caloryfy_8700? = {
         do {
             return try Caloryfy_8700(configuration: MLModelConfiguration())
@@ -47,17 +47,10 @@ struct HomeScreen: View {
                     let dailyCalories = bmrViewModel.calculateDailyCalories(user: user)
                     
                     CalorieChartView(dailyCalorieGoal: dailyCalories)
-                    
-//                    Button(action: { isPresenting = true }) {
-//                        Text("+ Track eat")
-//                            .fontWeight(.bold)
-//                            .frame(width: 200, height: 45)
-//                            .background(Color.green)
-//                            .foregroundColor(.white)
-//                            .cornerRadius(10)
-//                    }
+                                        
+                    NutritionChartView()
+                        .offset(y: -70)
                     .confirmationDialog("Choose an option", isPresented: $isPresenting, titleVisibility: .visible) {
-                        //                        Button("Camera") { isImagePickerPresented = true }
                         Button("Camera") {
                             sourceType = .camera
                             isPhotoLibrary = true
@@ -65,6 +58,9 @@ struct HomeScreen: View {
                         Button("Photo Library") {
                             sourceType = .photoLibrary
                             isPhotoLibrary = true
+                        }
+                        Button("Search For Food") {
+                            isSearchFood = true
                         }
                         Button("Cancel", role: .cancel) {}
                     }
@@ -80,6 +76,10 @@ struct HomeScreen: View {
                                 isNavigatingToImageView = true
                             }
                         }
+                    }
+                    .sheet(isPresented: $isSearchFood){
+                        FoodSearchView(isPresented: $isSearchFood,
+                                       foods: productViewModel.products)
                     }
                     
                     NavigationLink(
@@ -99,8 +99,10 @@ struct HomeScreen: View {
                     isNavigatingToImageView = true
                 }
             }
+            .onAppear {
+                productViewModel.loadJSON()
+            }
         }
-        .background(.thinMaterial)
     }
     
     func loadImage() {
@@ -178,7 +180,3 @@ func convertToCVPixelBuffer(newImage: UIImage) -> CVPixelBuffer? {
     CVPixelBufferUnlockBaseAddress(buffer, .readOnly)
     return buffer
 }
-
-//#Preview {
-//    HomeScreen(capturedImage: .constant(nil), classifier: ImageClassifier())
-//}

@@ -11,73 +11,116 @@ import SwiftData
 struct FoodHistoryView: View {
     @Query(sort: \FoodHistory.date, order: .reverse) var allFoodHistory: [FoodHistory]
 
-    private var groupedByDate: [String: [FoodHistory]] {
-        Dictionary(grouping: allFoodHistory) { history in
-            let formatter = DateFormatter()
-            formatter.dateStyle = .full
-            formatter.timeStyle = .none
-            return formatter.string(from: history.date)
+    @State private var selectedDate: Date = Date()
+    
+    private var daysInMonth: [Date] {
+        let calendar = Calendar.current
+        let current = Date()
+        let range = calendar.range(of: .day, in: .month, for: current)!
+        let components = calendar.dateComponents([.year, .month], from: current)
+        return range.compactMap { day -> Date? in
+            var comps = components
+            comps.day = day
+            return calendar.date(from: comps)
         }
     }
-    // Tambahkan di luar struct
+
+    private var filteredHistory: [FoodHistory] {
+        allFoodHistory.filter {
+            Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
+        }
+    }
+
     let borderColors: [Color] = [.yellow, .green, .orange]
 
+    // Custom formatter to display "Month" and "Day" separately
+    private var monthFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM"
+        return formatter
+    }
+
+    private var dayFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d"
+        return formatter
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                Text("Food History")
-                    .font(.title)
-                    .padding(.bottom, 8)
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        VStack(alignment: .leading) {
+            Text("Food\nHistory")
+                .font(.title)
+                .padding(.horizontal)
+                .padding(.vertical)
+                .fontWeight(.semibold)
+            
 
-                if allFoodHistory.isEmpty {
-                    VStack(alignment: .center, spacing: 12) {
-                        Spacer().frame(height: 100)
-                        Text("🥲 You haven’t eaten yet")
+            ScrollView(.horizontal, showsIndicators: false) {
+                ScrollViewReader { proxy in
+                    HStack {
+                        ForEach(daysInMonth, id: \.self) { date in
+                            let isSelected = Calendar.current.isDate(date, inSameDayAs: selectedDate)
+                            
+                            VStack {
+                                Text(monthFormatter.string(from: date)) // Month
+                                    .font(.system(size: 20))
+                                    .fontWeight(.semibold)
+                                    .padding(.bottom, 4)
+                                Text(dayFormatter.string(from: date)) // Day
+                                    .font(.system(size: 20))
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(isSelected ? Color.white : Color.gray)
+                            }
+                            .frame(width: 65, height: 78)
+                            .padding(5)
+                            .background(isSelected ? Color.orangePrimary : Color.gray.opacity(0.1))
+                            .cornerRadius(10)
+                            .foregroundColor(isSelected ? .white : .black)
+                            .id(date) // Assign ID to each date
+                            .onTapGesture {
+                                selectedDate = date
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .onAppear {
+                        // Scroll to today's date
+                        if let todayIndex = daysInMonth.firstIndex(where: { Calendar.current.isDate($0, inSameDayAs: Date()) }) {
+                            let todayDate = daysInMonth[todayIndex]
+                            withAnimation {
+                                proxy.scrollTo(todayDate, anchor: .center) // Scroll to today
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.bottom, 12)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    if filteredHistory.isEmpty {
+                        Text("🥲 No food recorded on this date")
                             .font(.title3)
                             .foregroundColor(.gray)
                             .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                    .frame(maxWidth: .infinity)
-                } else {
-//                    ForEach(groupedByDate.sorted(by: { $0.key > $1.key }), id: \.key) { dateString, items in
-//                        VStack(alignment: .leading, spacing: 8) {
-//                            Text("\(dateString)")
-//                                .font(.headline)
-//                                .padding(.bottom, 4)
-//                                .foregroundColor(.gray)
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-//
-//                            ForEach(items, id: \.id) { item in
-//                                FoodHistoryItemView(item: item)
-//                            }
-//                        }
-//                        .frame(maxWidth: .infinity)
-//                    }
-                    ForEach(groupedByDate.sorted(by: { $0.key > $1.key }), id: \.key) { dateString, items in
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("\(dateString)")
-                                .font(.headline)
-                                .padding(.bottom, 4)
-
-                            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                                let borderColor = borderColors[index % borderColors.count]
-                                FoodHistoryItemView(item: item, borderColor: borderColor)
-                            }
+                            .padding(.top, 80)
+                    } else {
+                        ForEach(Array(filteredHistory.enumerated()), id: \.element.id) { index, item in
+                            let borderColor = borderColors[index % borderColors.count]
+                            FoodHistoryItemView(item: item, borderColor: borderColor)
                         }
-                        .padding(.bottom)
                     }
-
                 }
+                .padding(.horizontal)
             }
-            .padding()
-            .frame(maxWidth: .infinity)
         }
-
     }
 }
+
+
+
+
+
 
 struct FoodHistoryItemView: View {
     let item: FoodHistory
@@ -102,6 +145,12 @@ struct FoodHistoryItemView: View {
                         .foregroundColor(.gray)
                 }
                 Spacer()
+                
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 20))
+                    .padding(13)
+                    .background(Circle().stroke(borderColor.opacity(0.5), lineWidth: 1.5))
+                    .foregroundColor(.black)
             }
             
             HStack {

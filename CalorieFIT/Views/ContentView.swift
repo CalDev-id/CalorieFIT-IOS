@@ -12,32 +12,58 @@ struct ContentView: View {
     @State private var capturedImage: UIImage? = nil
     @State private var isPresenting: Bool = false
     @Environment(\.modelContext) var context
+    @State private var isSelected: Int? = 1
+
+    @StateObject private var GMViewModel = GamificationViewModel()
 
     var body: some View {
         ZStack {
-            TabView{
-                HomeScreen(isPresenting: $isPresenting, capturedImage: $capturedImage, classifier: ImageClassifier())
-                    .tabItem {
-                        Image("home")
-                    }
+            TabView {
+                HomeScreen(
+                    isPresenting: $isPresenting,
+                    capturedImage: $capturedImage,
+                    classifier: ImageClassifier()
+                )
+                .tabItem {
+                    Image("home")
+                        .background(isSelected == 1 ? Color.colorGreenPrimary : Color.black)
+                }
+                .onTapGesture {
+                    isSelected = 1
+                }
+
                 FoodHistoryView()
                     .tabItem {
                         Image("history")
+                            .background(isSelected == 2 ? Color.colorGreenPrimary : Color.black)
                     }
+                    .onTapGesture {
+                        isSelected = 2
+                    }
+
                 Text(" ")
-                GamificationView(viewModel: GamificationViewModel(context: context))
+
+                GamificationView(viewModel: GMViewModel)
                     .tabItem {
                         Image("graph")
+                            .background(isSelected == 3 ? Color.colorGreenPrimary : Color.black)
                     }
+                    .onTapGesture {
+                        isSelected = 3
+                    }
+
                 ProfileView()
                     .tabItem {
                         Image("user")
-                        
+                            .background(isSelected == 4 ? Color.colorGreenPrimary : Color.black)
                     }
-                
+                    .onTapGesture {
+                        isSelected = 4
+                    }
             }
             .accentColor(Color.colorGreenPrimary)
             .background(.white)
+
             VStack {
                 Spacer()
                 HStack {
@@ -47,18 +73,21 @@ struct ContentView: View {
                     }) {
                         Image(systemName: "plus")
                             .padding(15)
-                            .foregroundColor(Color.white)
-                            
+                            .foregroundColor(.white)
                     }
                     .frame(width: 55, height: 55)
                     .background(Color.colorGreenPrimary)
                     .cornerRadius(100)
                     .padding(.bottom, 20)
-                    
                     Spacer()
                 }
             }
         }
+        .onAppear {
+            // Inject context setelah view muncul
+            GMViewModel.context = context
+        }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
