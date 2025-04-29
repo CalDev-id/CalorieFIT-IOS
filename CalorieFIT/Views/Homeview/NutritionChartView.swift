@@ -116,6 +116,7 @@ struct NutritionChartView: View {
                         .onTapGesture {
                             selectedDayIndex = index
                         }
+                        .offset(x: 20)
                 }
             }
         }

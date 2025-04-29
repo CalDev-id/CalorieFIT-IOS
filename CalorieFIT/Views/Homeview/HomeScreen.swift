@@ -30,15 +30,16 @@ struct HomeScreen: View {
     @State private var isNavigatingToImageView = false
     
     @StateObject var viewModel = NutritionViewModel()
+    @State private var model: VNCoreMLModel? = nil
 
-    let model: Caloryfy_8700? = {
-        do {
-            return try Caloryfy_8700(configuration: MLModelConfiguration())
-        } catch {
-            print("Error loading model: \(error)")
-            return nil
-        }
-    }()
+//    let model: Caloryfy_8700? = {
+//        do {
+//            return try Caloryfy_8700(configuration: MLModelConfiguration())
+//        } catch {
+//            print("Error loading model: \(error)")
+//            return nil
+//        }
+//    }()
 
     var body: some View {
         ScrollView{
@@ -106,18 +107,16 @@ struct HomeScreen: View {
     }
     
     func loadImage() {
+        if model == nil {
+            loadModel()
+        }
+
         guard let model = model else {
-            print("Model tidak ditemukan!")
-            return
-        }
-        let mlModel = model.model
-
-        guard let vnCoreMLModel = try? VNCoreMLModel(for: mlModel) else {
-            print("Gagal membuat VNCoreMLModel")
+            print("Model tidak tersedia!")
             return
         }
 
-        let request = VNCoreMLRequest(model: vnCoreMLModel) { request, error in
+        let request = VNCoreMLRequest(model: model) { request, error in
             guard let results = request.results as? [VNRecognizedObjectObservation] else { return }
             detectedObjects = results.map { result in
                 DetectedObject(
@@ -128,7 +127,8 @@ struct HomeScreen: View {
             }
         }
 
-        guard let image = capturedImage, let pixelBuffer = convertToCVPixelBuffer(newImage: image) else {
+        guard let image = capturedImage,
+              let pixelBuffer = convertToCVPixelBuffer(newImage: image) else {
             print("Gagal mengonversi gambar ke pixel buffer")
             return
         }
@@ -140,6 +140,15 @@ struct HomeScreen: View {
             showResultSheet.toggle()
         } catch {
             print("Error processing image: \(error.localizedDescription)")
+        }
+    }
+    
+    func loadModel() {
+        do {
+            let mlModel = try Caloryfy_8700(configuration: MLModelConfiguration()).model
+            model = try VNCoreMLModel(for: mlModel)
+        } catch {
+            print("Error loading CoreML model: \(error)")
         }
     }
 }
