@@ -4,18 +4,17 @@
 //
 //  Created by Heical Chandra on 12/03/25.
 //
-
 import SwiftUI
 
 struct ActivityView: View {
     @Binding var selectedActivity: Int
     
-    let activities: [(image: String, title: String)] = [
-        ("activity1", "Sedentary"),
-        ("activity2", "Lightly Active"),
-        ("activity3", "Moderately Active"),
-        ("activity4", "Very Active"),
-        ("activity5", "Super Active")
+    let activities: [(image: String, title: String, description: String)] = [
+        ("activity1", "Sedentary", "little to no exercise"),
+        ("activity2", "Lightly Active", "1-3 days/week"),
+        ("activity3", "Moderately Active", "3-5 days/week"),
+        ("activity4", "Very Active", "6-7 days/week"),
+        ("activity5", "Super Active", "twice/day, intense exercise")
     ]
     
     var body: some View {
@@ -24,7 +23,8 @@ struct ActivityView: View {
                 ActivityCard(
                     img: activities[index].image,
                     title: activities[index].title,
-                    isSelected: selectedActivity == (index + 1) // ✅ Sesuaikan perbandingan
+                    isSelected: selectedActivity == (index + 1),
+                    description: activities[index].description
                 )
                 .onTapGesture {
                     selectedActivity = index + 1 // ✅ Simpan dengan nilai 1-5
@@ -38,6 +38,7 @@ struct ActivityCard: View {
     let img: String
     let title: String
     let isSelected: Bool
+    let description: String
     
     var body: some View {
         HStack {
@@ -45,9 +46,14 @@ struct ActivityCard: View {
                 .resizable()
                 .frame(width: 50, height: 50)
                 .padding()
-            Text(title)
-                .font(.headline)
-                .foregroundColor(.black)
+            VStack(alignment: .leading){
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(.black)
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
             Spacer()
         }
         .frame(width: UIScreen.main.bounds.width - 40, height: 80)

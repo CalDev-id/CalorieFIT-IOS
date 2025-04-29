@@ -275,7 +275,6 @@ struct GamificationView: View {
         if let progress = progressList.first {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 16) {
-                    
                     Text("Leveling")
                         .font(.title2)
                         .fontWeight(.medium)
@@ -298,17 +297,17 @@ struct GamificationView: View {
                 }
                 .padding()
                 .navigationTitle("Progress Kamu")
-                .onAppear {
-                    viewModel.context = context
-                    viewModel.resetDailyQuestsIfNeeded()
-                }
 //                .onAppear {
-//                    if !hasAppeared {
-//                        hasAppeared = true
-//                        viewModel.context = context
-//                        viewModel.resetDailyQuestsIfNeeded()
-//                    }
+//                    viewModel.context = context
+//                    viewModel.resetDailyQuestsIfNeeded()
 //                }
+                .onAppear {
+                    if !hasAppeared {
+                        hasAppeared = true
+                        viewModel.context = context
+                        viewModel.resetDailyQuestsIfNeeded()
+                    }
+                }
             }
             .scrollIndicators(.hidden)
         } else {
@@ -341,10 +340,10 @@ struct GamificationView: View {
                 (image: "badge8", unlockLevel: 20, currentLevel: level)
             ])
 
-            HStackBadgeRow(badges: [
-                (image: "badge9", unlockLevel: 3, currentLevel: streak),
-                (image: "badge10", unlockLevel: 10, currentLevel: streak),
-                (image: "badge12", unlockLevel: 20, currentLevel: streak)
+            HStackBadgeRowStreak(badges: [
+                (image: "badge9", unlockStreak: 3, currentStreak: streak),
+                (image: "badge10", unlockStreak: 10, currentStreak: streak),
+                (image: "badge12", unlockStreak: 20, currentStreak: streak)
             ])
         }
     }
@@ -414,6 +413,37 @@ struct HStackBadgeRow: View {
                         }
                     }
                     Text(badge.currentLevel < badge.unlockLevel ? "Need lvl \(badge.unlockLevel)" : "Unlocked!")
+                        .font(.caption)
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+    }
+}
+
+
+struct HStackBadgeRowStreak: View {
+    let badges: [(image: String, unlockStreak: Int, currentStreak: Int)]
+
+    var body: some View {
+        HStack {
+            ForEach(badges, id: \.image) { badge in
+                VStack {
+                    ZStack {
+                        Image(badge.image)
+                            .resizable()
+                            .frame(width: 80, height: 80)
+                        if badge.currentStreak < badge.unlockStreak {
+                            Color.gray.opacity(0.2)
+                                .frame(width: 80, height: 80)
+                                .cornerRadius(100)
+                            Image(systemName: "lock.fill")
+                                .resizable()
+                                .foregroundColor(.orange)
+                                .frame(width: 20, height: 20)
+                        }
+                    }
+                    Text(badge.currentStreak < badge.unlockStreak ? "Need Streak: \(badge.unlockStreak)" : "Unlocked!")
                         .font(.caption)
                 }
                 .frame(maxWidth: .infinity)

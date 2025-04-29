@@ -41,7 +41,6 @@ struct ContentViewWrapper: View {
         NavigationStack {
             if users.isEmpty {
                 OnboardingView()
-//                SplashView()
             } else {
                 ContentView()
             }
