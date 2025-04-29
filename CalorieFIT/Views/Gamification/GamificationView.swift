@@ -13,21 +13,57 @@ struct GamificationView: View {
     @ObservedObject var viewModel: GamificationViewModel
     @Environment(\.modelContext) var context
     
-    
-
     var body: some View {
+        if let progress = progressList.first {
+        ScrollView{
         VStack(alignment: .leading, spacing: 16) {
-            if let progress = progressList.first {
-                Text("🎯 XP: \(progress.xp)")
-                ProgressView(value: Double(progress.xp), total: 100)
-                Text("🆙 Level: \(progress.level)")
-                Text("🔥 Streak: \(progress.streak) hari")
-            } else {
-                Text("Belum ada data progress ditemukan.")
-                    .foregroundColor(.gray)
-            }
+            
+                HStack {
+                    Spacer()
+                    Text("Leveling")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                    Spacer()
+                }
+//                .frame(height: 50)
+                .padding(.horizontal, 5)
+            
+                VStack(spacing: 8) {
+                    HStack{
+                        Text("🆙 Level: \(progress.level)")
+                            .font(.subheadline)
+                            .foregroundColor(.black)
+                        Spacer()
+                        Text("🎯 XP: \(progress.xp)")
+                            .font(.subheadline)
+                            .foregroundColor(.black)
+                    }
 
-            Divider()
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(height: 12)
+                            
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color.colorGreenPrimary)
+                                .frame(width: CGFloat(progress.xp) / 100 * geometry.size.width, height: 12)
+                                .animation(.easeInOut(duration: 0.5), value: progress.xp)
+                        }
+                    }
+                    .frame(height: 12)
+//                    HStack{
+//                        Spacer()
+//                        Text("🔥 Streak: \(progress.streak) hari")
+//                            .font(.subheadline)
+//                            .foregroundColor(.black)
+//                    }
+                }
+                .padding(.bottom)
+            
+
+//            Divider()
 
             Text("🎯 Daily Quests")
                 .font(.headline)
@@ -62,99 +98,165 @@ struct GamificationView: View {
                 )
             }
             
-//            VStack{
-//                HStack{
-//                    VStack{
-//                        ZStack{
-//                            RunningAppleView()
-//                            Image("locked")
-//                                .resizable()
-//                                .frame(width: 80, height: 80)
-//                                .background(.gray.opacity(0.2))
-//                        }
-//                        Text("Unlock lvl 3")
-//                    }
-//                    VStack{
-//                        ZStack{
-//                            RunningAppleView()
-//                            Image("locked")
-//                                .resizable()
-//                                .frame(width: 80, height: 80)
-//                                .background(.gray.opacity(0.2))
-//                        }
-//                        Text("Unlock lvl 3")
-//                    }
-//                    VStack{
-//                        ZStack{
-//                            RunningAppleView()
-//                            Image("locked")
-//                                .resizable()
-//                                .frame(width: 80, height: 80)
-//                                .background(.gray.opacity(0.2))
-//                        }
-//                        Text("Unlock lvl 3")
-//                    }
-//                }
-//                HStack{
-//                    VStack{
-//                        ZStack{
-//                            RunningAppleView()
-//                            Image("locked")
-//                                .resizable()
-//                                .frame(width: 80, height: 80)
-//                                .background(.gray.opacity(0.2))
-//                        }
-//                        Text("Unlock lvl 3")
-//                    }
-//                    VStack{
-//                        ZStack{
-//                            RunningAppleView()
-//                            Image("locked")
-//                                .resizable()
-//                                .frame(width: 80, height: 80)
-//                                .background(.gray.opacity(0.2))
-//                        }
-//                        Text("Unlock lvl 3")
-//                    }
-//                    VStack{
-//                        ZStack{
-//                            RunningAppleView()
-//                            Image("locked")
-//                                .resizable()
-//                                .frame(width: 80, height: 80)
-//                                .background(.gray.opacity(0.2))
-//                        }
-//                        Text("Unlock lvl 3")
-//                    }
-//                }
-//            }
-
-
-
-            Spacer()
+            Text("🎯 Badge")
+                .font(.headline)
+            VStack{
+                HStack{
+                    Spacer()
+                    VStack{
+                        ZStack{
+                            Image("badge6")
+                                .resizable()
+                                .frame(width: 80, height: 80)
+                            if progress.level < 3 {
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.orangePrimary)
+                                    .frame(width: 20, height: 20)
+                                
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.white.opacity(0.0))
+                                    .frame(width: 80, height: 80)
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(100)
+                            }
+                        }
+                        Text(progress.level < 3 ? "Need lvl 3" : "Badge lvl 3")
+                    }
+                    Spacer()
+                    VStack{
+                        ZStack{
+                            Image("badge7")
+                                .resizable()
+                                .frame(width: 80, height: 80)
+                            if progress.level < 10 {
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.orangePrimary)
+                                    .frame(width: 20, height: 20)
+                                    
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.white.opacity(0.0))
+                                    .frame(width: 80, height: 80)
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(100)
+                            }
+                        }
+                        Text(progress.level < 10 ? "Need lvl 10" : "Badge lvl 10")
+                    }
+                    Spacer()
+                    VStack{
+                        ZStack{
+                            Image("badge8")
+                                .resizable()
+                                .frame(width: 80, height: 80)
+                            if progress.level < 20 {
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.orangePrimary)
+                                    .frame(width: 20, height: 20)
+                                
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.white.opacity(0.0))
+                                    .frame(width: 80, height: 80)
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(100)
+                            }
+                        }
+                        Text(progress.level < 20 ? "Need lvl 20" : "Badge lvl 20")
+                    }
+                    Spacer()
+                }
+            }
+            VStack{
+                HStack{
+                    Spacer()
+                    VStack{
+                        ZStack{
+                            Image("badge9")
+                                .resizable()
+                                .frame(width: 80, height: 80)
+                            if progress.streak < 3 {
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.orangePrimary)
+                                    .frame(width: 20, height: 20)
+                                    
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.white.opacity(0.0))
+                                    .frame(width: 80, height: 80)
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(100)
+                            }
+                        }
+                        Text(progress.streak < 3 ? "Need Streak 3" : "Badge Str 3")
+                    }
+                    Spacer()
+                    VStack{
+                        ZStack{
+                            Image("badge10")
+                                .resizable()
+                                .frame(width: 80, height: 80)
+                            if progress.streak < 10 {
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.orangePrimary)
+                                    .frame(width: 20, height: 20)
+                                
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.white.opacity(0.0))
+                                    .frame(width: 80, height: 80)
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(100)
+                            }
+                        }
+                        Text(progress.streak < 10 ? "Need Streak 10" : "Badge Str 10")
+                    }
+                    Spacer()
+                    VStack{
+                        ZStack{
+                            Image("badge12")
+                                .resizable()
+                                .frame(width: 80, height: 80)
+                            if progress.streak < 20 {
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.orangePrimary)
+                                    .frame(width: 20, height: 20)
+                                
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .foregroundColor(Color.white.opacity(0.0))
+                                    .frame(width: 80, height: 80)
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(100)
+                            }
+                        }
+                        Text(progress.streak < 20 ? "Need Streak 20" : "Badge Str 20")
+                    }
+                    Spacer()
+                }
+            }
         }
         .padding()
         .navigationTitle("Progress Kamu")
         .onAppear {
             viewModel.context = context // untuk memastikan context juga tersedia
             viewModel.resetDailyQuestsIfNeeded()
-            print("📆 Mengecek apakah quest perlu di-reset...")
+//            print("📆 Mengecek apakah quest perlu di-reset...")
 
         }
-    }
-}
-
-struct RunningAppleView: View {
-    @State private var currentImage = 1
-    let timer = Timer.publish(every: 0.2, on: .main, in: .common).autoconnect()
-
-    var body: some View {
-        Image("apple_run_\(currentImage)")
-            .resizable()
-            .frame(width: 100, height: 100)
-            .onReceive(timer) { _ in
-                // Ganti image dari 1 ke 2 dan sebaliknya
-                currentImage = currentImage == 1 ? 2 : 1
-            }
+            
+        }
+        .scrollIndicators(.hidden)
+        } else {
+            Text("Belum ada data progress ditemukan.")
+                .foregroundColor(.gray)
+        }
     }
 }

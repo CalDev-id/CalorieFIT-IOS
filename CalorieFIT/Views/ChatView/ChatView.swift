@@ -45,10 +45,10 @@ struct ChatHeaderView: View {
                     dismiss()
                 }
             Spacer()
-            Image("avocado")
+            Image("calorify_logo")
                 .resizable()
                 .frame(width: 42, height: 42)
-                .cornerRadius(10)
+                .cornerRadius(100)
             Text("Calorify")
                 .font(.system(size: 15))
                 .fontWeight(.semibold)
@@ -82,22 +82,23 @@ struct ChatMessagesView: View {
                                     .cornerRadius(10)
                                 VStack {
                                     Image("profile")
-                                        .font(.system(size: 35))
-                                        .foregroundColor(.white)
+                                        .resizable()
+                                        .frame(width: 38, height: 38)
+                                        
                                     Spacer(minLength: 0)
                                 }
                             } else {
                                 VStack {
-                                    Image("avocado")
+                                    Image("calorify_logo")
                                         .resizable()
                                         .frame(width: 38, height: 38)
-                                        .cornerRadius(10)
+                                        .cornerRadius(100)
                                     Spacer(minLength: 0)
                                 }
                                 Text(message.content)
                                     .padding()
-                                    .background(Color.black)
-                                    .foregroundColor(.white)
+                                    .background(Color.gray.opacity(0.1))
+                                    .foregroundColor(.black)
                                     .cornerRadius(10)
                                 Spacer()
                             }
@@ -130,6 +131,7 @@ struct ChatMessagesView: View {
                     }
                 }
             }
+            .scrollIndicators(.hidden)
             .padding(.horizontal, 14)
         }
     }

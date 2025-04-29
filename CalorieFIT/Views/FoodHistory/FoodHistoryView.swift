@@ -48,7 +48,7 @@ struct FoodHistoryView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Food\nHistory")
+            Text("Food History")
                 .font(.title)
                 .padding(.horizontal)
                 .padding(.vertical)
