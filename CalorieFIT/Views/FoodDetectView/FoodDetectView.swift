@@ -256,7 +256,8 @@ struct FoodDetectView: View {
                                     protein: matched.protein ?? 0,
                                     fat: matched.fat ?? 0,
                                     carbohydrate: matched.carbohydrate ?? 0,
-                                    image: capturedImage
+                                    image: capturedImage,
+                                    imageURL: nil
                                 )
                                 if let update = matchedNutrition {
                                     GMViewModel.updateProgress(food_name: matched.food_name, calory: matched.calory ?? 0, protein: matched.protein ?? 0, fat: matched.fat ?? 0, carbohydrate: matched.carbohydrate ?? 0)

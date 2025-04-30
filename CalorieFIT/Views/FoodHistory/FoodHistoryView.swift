@@ -135,7 +135,20 @@ struct FoodHistoryItemView: View {
                         .resizable()
                         .frame(width: 45, height: 45)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    AsyncImage(url: URL(string: item.imageURL ?? "")) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 45, height: 45)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    } placeholder: {
+                        Color.gray
+                            .frame(width: 45, height: 45)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
                 }
+                
                 VStack(alignment: .leading) {
                     Text(item.food_name)
                         .font(.system(size: 18))

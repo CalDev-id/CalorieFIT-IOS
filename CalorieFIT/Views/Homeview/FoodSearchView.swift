@@ -9,9 +9,13 @@ import SwiftUI
 
 struct FoodSearchView: View {
     @Binding var isPresented: Bool
+    @Environment(\.dismiss) var dismiss
     @State private var searchText: String = ""
     let foods: [FoodProduct]
     let borderColors: [Color] = [.yellow, .green, .orange]
+    //new
+    @State private var selectedFood: FoodProduct? = nil
+    @State private var navigateToDetail: Bool = false
     
     var filteredProducts: [FoodProduct] {
         if searchText.isEmpty {
@@ -24,7 +28,7 @@ struct FoodSearchView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(alignment: .leading) {
                 Text("Find ur food")
                     .font(.title2)
@@ -34,28 +38,54 @@ struct FoodSearchView: View {
                 SearchBar(text: $searchText)
                 
                 List {
-                    ForEach(Array(filteredProducts.enumerated()), id: \.element.id) { index, product in
+                    ForEach(filteredProducts.indices, id: \.self) { index in
+                        let product = filteredProducts[index]
                         let borderColor = borderColors[index % borderColors.count]
                         
-                        FoodItemView(item: product, borderColor: borderColor)
-                            .onTapGesture {
-                                isPresented.toggle()
-                            }
-                            .listRowInsets(EdgeInsets())
-                            .background(Color.white)
-                            .padding(.vertical, 5)
-                            .padding(.horizontal)
-                        
+                        Button {
+                            selectedFood = product
+                            navigateToDetail = true
+                        } label: {
+                            FoodItemView(item: product, borderColor: borderColor)
+                        }
+                        .listRowInsets(EdgeInsets())
+                        .background(Color.white)
+                        .padding(.vertical, 5)
+                        .padding(.horizontal)
                     }
                 }
                 .listStyle(PlainListStyle())
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Cancel") {
-                            isPresented = false
+//                .toolbar {
+//                    ToolbarItem(placement: .navigationBarLeading) {
+//                        Button("Cancel") {
+//                            dismiss()
+//                        }
+//                    }
+//                }
+                
+                // NavigationLink ke Detail View
+                NavigationLink(
+                    destination: Group {
+                        if let food = selectedFood {
+                            FoodDetectFromSearchView(
+                                ImageURL: .constant(food.image),
+                                name: .constant(food.name),
+                                calories: .constant(String(format: "%.0f", food.calories)),
+                                protein: .constant(food.proteins),
+                                fat: .constant(food.fat),
+                                carbs: .constant(food.carbohydrate),
+                                showResultSheet: $isPresented // binding yang sama
+                            )
+                        } else {
+                            EmptyView()
                         }
-                    }
-                }
+                    },
+                    isActive: $navigateToDetail,
+                    label: { EmptyView() }
+                )
+                .hidden()
+
+                
             }
             .padding(.top, 20)
         }
@@ -86,17 +116,6 @@ struct SearchBar: View {
     }
 }
 
-struct ProductSearchView_Previews: PreviewProvider {
-    @State static var isPresented = true
-    @State static var previewProducts = FoodProductViewModel().products
-    
-    static var previews: some View {
-        NavigationView {
-            FoodSearchView(isPresented: $isPresented, foods: previewProducts)
-        }
-    }
-}
-
 struct FoodItemView: View {
     let item: FoodProduct
     let borderColor: Color
@@ -108,11 +127,11 @@ struct FoodItemView: View {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 75, height: 70)
+                        .frame(width: 45, height: 45)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 } placeholder: {
                     Color.gray
-                        .frame(width: 75, height: 70)
+                        .frame(width: 45, height: 45)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 

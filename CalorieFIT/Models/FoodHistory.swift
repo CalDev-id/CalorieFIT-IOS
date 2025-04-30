@@ -18,8 +18,9 @@ class FoodHistory {
     var fat: Double?
     var carbohydrate: Double?
     var image: String?
+    var imageURL: String?
 
-    init(food_name: String, calory: Double? = nil, protein: Double? = nil, fat: Double? = nil, carbohydrate: Double? = nil, image: String? = nil) {
+    init(food_name: String, calory: Double? = nil, protein: Double? = nil, fat: Double? = nil, carbohydrate: Double? = nil, image: String? = nil, imageURL: String? = nil) {
         self.food_name = food_name
         self.calory = calory
         self.protein = protein
@@ -27,6 +28,7 @@ class FoodHistory {
         self.carbohydrate = carbohydrate
         self.image = image
         self.date = Date()
+        self.imageURL = imageURL
     }
 }
 

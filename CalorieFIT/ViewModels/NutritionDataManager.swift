@@ -23,7 +23,7 @@ class NutritionDataManager {
         return formatter.string(from: Date())
     }
 
-    func updateOrInsertNutrition(food_name: String, calory: Double, protein: Double, fat: Double, carbohydrate: Double, image: UIImage?) {
+    func updateOrInsertNutrition(food_name: String, calory: Double, protein: Double, fat: Double, carbohydrate: Double, image: UIImage?, imageURL: String?) {
         let todayID = getCurrentDateID()
         print("🟢 Menyimpan data dengan ID: \(todayID)")
 
@@ -63,7 +63,8 @@ class NutritionDataManager {
                 protein: protein,
                 fat: fat,
                 carbohydrate: carbohydrate,
-                image: base64Image
+                image: base64Image,
+                imageURL: imageURL
             )
             context.insert(foodHistory)
             print("📜 FoodHistory berhasil disimpan.")

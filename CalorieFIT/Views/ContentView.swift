@@ -61,6 +61,12 @@ struct ContentView: View {
                     Spacer()
                 }
             }
+            NavigationStack {
+                EmptyView()
+                    .navigationDestination(isPresented: $isSearchFood) {
+                        FoodSearchView(isPresented: $isSearchFood, foods: productViewModel.products)
+                    }
+            }
         }
         .confirmationDialog("Choose an option", isPresented: $isPresenting) {
             Button("Camera") {
@@ -88,9 +94,7 @@ struct ContentView: View {
                 }
             }
         }
-        .sheet(isPresented: $isSearchFood) {
-            FoodSearchView(isPresented: $isSearchFood, foods: productViewModel.products)
-        }
+        
         .background(
             NavigationLink(
                 destination: FoodDetectView(
