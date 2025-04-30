@@ -242,7 +242,6 @@ struct FoodDetectView: View {
                                 MacronutrientDetailView(image: "carbs", name: "Carbs", contain: (matched.carbohydrate ?? 0), goal: carbsGoal, color: Color.yellow)
                                 MacronutrientDetailView(image: "fat", name: "Fat", contain: (matched.fat ?? 0), goal: fatGoal, color: Color.orange)
                             }
-//                            .padding(.bottom, 20)
                             
                         } else {
                             Text("Nutrition data not found.")
@@ -265,29 +264,6 @@ struct FoodDetectView: View {
                             }
                             dismiss()
                         }
-//                        
-//                        NavigationLink(destination: ContentView(), isActive: $navigateToContentView) {
-//                            EmptyView()
-//                        }
-//
-//                        SecondaryBTN(name: "Confirm", color: Color.colorGreenPrimary) {
-//                            if let matched = matchedNutrition {
-//                                nutritionManager.updateOrInsertNutrition(
-//                                    food_name: matched.food_name,
-//                                    calory: matched.calory ?? 0,
-//                                    protein: matched.protein ?? 0,
-//                                    fat: matched.fat ?? 0,
-//                                    carbohydrate: matched.carbohydrate ?? 0,
-//                                    image: capturedImage
-//                                )
-//                                if let update = matchedNutrition {
-//                                    GMViewModel.updateProgress(food_name: matched.food_name, calory: matched.calory ?? 0, protein: matched.protein ?? 0, fat: matched.fat ?? 0, carbohydrate: matched.carbohydrate ?? 0)
-//                                }
-//                                
-//                                navigateToContentView = true // ini yang memicu navigasi
-//                                
-//                            }
-//                        }
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 400)
@@ -295,7 +271,99 @@ struct FoodDetectView: View {
                     .clipShape(RoundedCorners(radius: 30, corners: [.topLeft, .topRight]))
                 }
                 .frame(maxWidth: .infinity)
+            }else {
+                // ELSE condition: Tidak ada objek yang terdeteksi
+                VStack {
+                    HStack {
+                        Button(action: {
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Image(systemName: "arrow.left")
+                                .font(.system(size: 20))
+                                .padding(10)
+                                .background(Circle().stroke(Color.gray.opacity(0.5), lineWidth: 1.5))
+                                .foregroundColor(.black)
+                        }
+                        
+                        Spacer()
+                        
+                        Text("Nutrition")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            // Optional: action for trailing button
+                        }) {
+                            Image(systemName: "ellipsis")
+                                .font(.system(size: 20))
+                                .padding(13)
+                                .background(Circle().stroke(Color.gray.opacity(0.5), lineWidth: 1.5))
+                                .foregroundColor(.black)
+                        }
+                    }
+                    .frame(height: 50)
+                    .background(.white)
+                    .padding(.top, 55)
+                    .padding(.horizontal, 20)
+
+//                    if let image = capturedImage {
+//                        Image(uiImage: image)
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: UIScreen.main.bounds.width, height: 400)
+//                    }
+                    if let image = capturedImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .overlay {
+                                GeometryReader { geometry in
+                                    if let bestObject = mostAccurateObject {
+                                        Path { path in
+                                            path.addRect(VNImageRectForNormalizedRect(bestObject.boundingBox, Int(geometry.size.width), Int(geometry.size.height)))
+                                        }
+                                        .stroke(Color.red, lineWidth: 2)
+                                    }
+                                }
+                            }
+                            .frame(width: UIScreen.main.bounds.width, height: 400)
+                    }
+//                    Spacer()
+
+                    Spacer()
+                    
+
+
+                }
+                .background(.white)
+                
+                VStack{
+                    Spacer()
+                    
+                    VStack{
+                        VStack(spacing: 15) {
+                            Text("Nothing could be detected.")
+                                .font(.title3)
+                                .foregroundColor(.gray)
+                                .fontWeight(.medium)
+                            
+    //                        SecondaryBTN(name: "Back", color: Color.colorGreenPrimary) {
+    //                            dismiss()
+    //                        }
+                        }
+//                        .frame(maxWidth: .infinity)
+//                        .frame(height: 200)
+//                        .background(.white)
+//                        .clipShape(RoundedCorners(radius: 30, corners: [.topLeft, .topRight]))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 400)
+                        .background(.white)
+                        .clipShape(RoundedCorners(radius: 30, corners: [.topLeft, .topRight]))
+                    }
+                }
             }
+            
 
         }
         .onAppear {

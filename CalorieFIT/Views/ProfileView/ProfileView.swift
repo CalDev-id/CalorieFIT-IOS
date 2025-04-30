@@ -37,6 +37,7 @@ struct ProfileView: View {
                             height: user.inputHeight,
                             weight: user.inputWeight,
                             activity: user.selectedActivity,
+                            goal: user.selectedGoal,
                             user: user
                         )
                     }
@@ -58,6 +59,7 @@ struct ProfileView: View {
         @State var height: Double
         @State var weight: Double
         @State var activity: Int
+        @State var goal: Int
         @State private var isSelected: Int = 1
         
         var user: Users
@@ -67,6 +69,12 @@ struct ProfileView: View {
             "Moderate activity",// 2
             "Very active",      // 3
             "Super active"      // 4
+        ]
+        
+        let goals = [
+            "Maintain weight",  // 1
+            "Lose weight",   // 2
+            "Gain weight"      // 3
         ]
         var body: some View {
             VStack(alignment: .leading, spacing: 16) {
@@ -167,18 +175,34 @@ struct ProfileView: View {
                     Text("\(Int(weight)) kg")
                 }
 
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Activity Level")
-                        .font(.headline)
+                HStack{
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Activity Level")
+                            .font(.headline)
 
-                    Picker("Select Activity", selection: $activity) {
-                        ForEach(0..<activityLevels.count, id: \.self) { index in
-                            Text(activityLevels[index]).tag(index + 1)
+                        Picker("Select Activity", selection: $activity) {
+                            ForEach(0..<activityLevels.count, id: \.self) { index in
+                                Text(activityLevels[index]).tag(index + 1)
+                            }
                         }
+                        .pickerStyle(MenuPickerStyle())
+                        .tint(Color.colorGreenPrimary)
                     }
-                    .pickerStyle(MenuPickerStyle())
-                    .tint(Color.colorGreenPrimary)
+                    Spacer()
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Goals")
+                            .font(.headline)
+
+                        Picker("Select Goals", selection: $goal) {
+                            ForEach(0..<goals.count, id: \.self) { index in
+                                Text(goals[index]).tag(index + 1)
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                        .tint(Color.colorGreenPrimary)
+                    }
                 }
+                Spacer()
                 HStack{
                     Spacer()
                     SecondaryBTN(name: "Save", color: Color.colorGreenPrimary, todo: {
@@ -188,6 +212,7 @@ struct ProfileView: View {
                         user.inputHeight = height
                         user.inputWeight = weight
                         user.selectedActivity = activity
+                        user.selectedGoal = goal
 
                         try? modelContext.save()
                         dismiss()
