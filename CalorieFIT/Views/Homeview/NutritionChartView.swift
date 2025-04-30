@@ -22,7 +22,7 @@ struct NutritionChartView: View {
                 let width = geometry.size.width
                 let height = geometry.size.height
                 let points = getWeeklyCalories()
-                let maxCal = yAxisValues.max() ?? 2500.0
+                let maxCal = yAxisValues.max() ?? 2000.0
 
                 ZStack {
                     // Y-Axis grid lines and labels
@@ -159,7 +159,7 @@ struct NutritionChartView: View {
         return formatter.date(from: id)
     }
     private var yAxisValues: [Double] {
-        stride(from: 0, through: 4000, by: 1000).map { $0 }
+        stride(from: 0, through: 2000, by: 500).map { $0 }
     }
 
 }

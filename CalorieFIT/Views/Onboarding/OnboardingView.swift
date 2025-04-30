@@ -32,7 +32,6 @@ struct OnboardingView: View {
     @State private var showSplash: Bool = false
     
     @State private var isLoading: Bool = false
-//    @State private var isSaving: Bool = false
     
     @State private var progressLoading: CGFloat = 0.0
 
@@ -46,7 +45,6 @@ struct OnboardingView: View {
         if !showSplash {
             SplashView(showSplash: $showSplash)
         } else if isLoading {
-//            LoadingView(isSaving: $isSaving)
             VStack {
                 Text("Personalizing Your Calorify \n Experience...")
                     .multilineTextAlignment(.center)
@@ -83,7 +81,7 @@ struct OnboardingView: View {
                         progressLoading += 0.01
                     } else {
                         timer.invalidate()
-                        let newUser = Users( // ✅ Buat objek Users
+                        let newUser = Users(
                             inputName: inputName,
                             inputAge: inputAge ?? 0,
                             selectedGender: selectedGender,

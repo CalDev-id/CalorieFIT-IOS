@@ -12,6 +12,7 @@ struct ProfileView: View {
     @Query private var users: [Users]
     @Query private var userProgress: [UserProgress]
     @StateObject private var bmrViewModel = BMRViewModel()
+    @State private var isEditing: Bool = false
     
     var body: some View {
         if let user = users.first {
@@ -27,11 +28,179 @@ struct ProfileView: View {
                 }
                 .padding(.horizontal)
                 .background(.white)
+                .sheet(isPresented: $isEditing) {
+                    if let user = users.first {
+                        ProfileEditView(
+                            name: user.inputName,
+                            age: user.inputAge,
+                            gender: user.selectedGender,
+                            height: user.inputHeight,
+                            weight: user.inputWeight,
+                            activity: user.selectedActivity,
+                            user: user
+                        )
+                    }
+                }
+
             }
         } else {
             Text("No user data available")
         }
     }
+    // MARK: - edit Profile
+    struct ProfileEditView: View {
+        @Environment(\.modelContext) var modelContext
+        @Environment(\.dismiss) var dismiss
+
+        @State var name: String
+        @State var age: Int
+        @State var gender: String
+        @State var height: Double
+        @State var weight: Double
+        @State var activity: Int
+        @State private var isSelected: Int = 1
+        
+        var user: Users
+        let activityLevels = [
+            "Sedentary",        // 0
+            "Light activity",   // 1
+            "Moderate activity",// 2
+            "Very active",      // 3
+            "Super active"      // 4
+        ]
+        var body: some View {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack{
+                    Spacer()
+                    Text("Edit Profile")
+                        .font(.title2)
+                        .bold()
+                    Spacer()
+                }
+                Divider()
+
+                HStack {
+                    Text("Name")
+                        .font(.system(size: 16))
+                    Spacer()
+                    TextField("Enter your name", text: $name)
+                        .foregroundColor(.gray)
+                        .font(.system(size: 16))
+                        .multilineTextAlignment(.trailing)
+                }
+                .padding(.vertical)
+                .background(Color.white)
+                
+//                Divider()
+//                    .padding(.leading)
+//                
+                HStack {
+                    Text("Age")
+                        .font(.system(size: 16))
+                    Spacer()
+                    TextField("Enter your age", value: $age, formatter: NumberFormatter())
+                        .keyboardType(.numberPad)
+                        .foregroundColor(.gray)
+                        .font(.system(size: 16))
+                        .multilineTextAlignment(.trailing)
+                }
+                .padding(.bottom)
+                .background(Color.white)
+
+                Text("Gender")
+                    .font(.headline)
+
+                HStack(spacing: 20) {
+                    Spacer()
+                    VStack {
+                        Button(action: {
+                            gender = "Male"
+                        }) {
+                            Image("profile")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .padding(5)
+                                .cornerRadius(100)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 200)
+                                        .stroke(gender == "Male" ? Color.colorGreenPrimary : Color.white, lineWidth: 2)
+                                        .shadow(radius: 2)
+                                )
+                        }
+                        Text("Male")
+                            .foregroundColor(gender == "Male" ? Color.colorGreenPrimary : Color.black)
+                    }
+                    Spacer()
+                    VStack {
+                        Button(action: {
+                            gender = "Female"
+                        }) {
+                            Image("female_1")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .padding(5)
+                                .cornerRadius(100)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 200)
+                                        .stroke(gender == "Female" ? Color.colorGreenPrimary : Color.white, lineWidth: 2)
+                                        .shadow(radius: 2)
+                                )
+                        }
+                        Text("Female")
+                            .foregroundColor(gender == "Female" ? Color.colorGreenPrimary : Color.black)
+                    }
+                    Spacer()
+                }
+
+
+                VStack(alignment: .leading) {
+                    Text("Height (cm)")
+                    Slider(value: $height, in: 100...250, step: 1)
+                        .tint(Color.colorGreenPrimary)
+                    Text("\(Int(height)) cm")
+                }
+
+                VStack(alignment: .leading) {
+                    Text("Weight (kg)")
+                    Slider(value: $weight, in: 30...200, step: 1)
+                        .tint(Color.colorGreenPrimary)
+                    Text("\(Int(weight)) kg")
+                }
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Activity Level")
+                        .font(.headline)
+
+                    Picker("Select Activity", selection: $activity) {
+                        ForEach(0..<activityLevels.count, id: \.self) { index in
+                            Text(activityLevels[index]).tag(index + 1)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .tint(Color.colorGreenPrimary)
+                }
+                HStack{
+                    Spacer()
+                    SecondaryBTN(name: "Save", color: Color.colorGreenPrimary, todo: {
+                        user.inputName = name
+                        user.inputAge = age
+                        user.selectedGender = gender
+                        user.inputHeight = height
+                        user.inputWeight = weight
+                        user.selectedActivity = activity
+
+                        try? modelContext.save()
+                        dismiss()
+                    })
+                    Spacer()
+                }
+                Spacer()
+            }
+            .padding()
+        }
+    }
+
+
     
     @ViewBuilder
     private func StatView(userProgress: UserProgress) -> some View {
@@ -53,17 +222,25 @@ struct ProfileView: View {
             }
         }
     }
-
     
     // MARK: - Header View
     @ViewBuilder
     private func HeaderView() -> some View {
         HStack {
+            Image(systemName: "square.and.pencil")
+                .padding()
+                .foregroundColor(Color.white.opacity(0.0))
             Spacer()
             Text("Profile")
                 .font(.title2)
                 .fontWeight(.medium)
             Spacer()
+            Image(systemName: "square.and.pencil")
+                .padding()
+                .fontWeight(.bold)
+                .onTapGesture {
+                    isEditing = true
+                }
         }
         .frame(height: 50)
         .padding(.horizontal, 5)

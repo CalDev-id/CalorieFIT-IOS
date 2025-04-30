@@ -15,7 +15,7 @@ struct GenderView: View {
             HStack{
                 VStack {
                     ZStack{
-                        Image("male_1")
+                        Image("profile")
                             .resizable()
                             .frame(width: 120, height: 120)
                             .padding(5)
