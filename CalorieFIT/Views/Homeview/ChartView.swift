@@ -79,13 +79,13 @@ struct CalorieChartView: View {
     
     var body: some View {
         VStack {
-            // Header
             HStack {
-                Image("profile")
-                    .resizable()
-                    .frame(width: 65, height: 65)
-                    .padding(.trailing, 5)
-                
+                if let user = users.first {
+                    Image(user.selectedGender == "Male" ? "profile" : "female_icon")
+                        .resizable()
+                        .frame(width: 65, height: 65)
+                        .padding(.trailing, 5)
+                }
                 VStack(alignment: .leading) {
                     Text("Welcome")
                         .foregroundColor(.gray)
@@ -93,30 +93,16 @@ struct CalorieChartView: View {
                         .font(.system(size: 19, weight: .regular))
                 }
                 Spacer()
-                
-//                ZStack {
-//                    Image(systemName: "magnifyingglass")
-//                        .font(.system(size: 20))
-//                        .padding(8)
-//                }
-//                .overlay(
-//                    RoundedRectangle(cornerRadius: 100)
-//                        .stroke(Color.black.opacity(0.3), lineWidth: 2)
-//                )
-//                
-//                ZStack {
-//                    Image(systemName: "bell")
-//                        .font(.system(size: 20))
-//                        .padding(8)
-//                }
-//                .overlay(
-//                    RoundedRectangle(cornerRadius: 100)
-//                        .stroke(Color.black.opacity(0.3), lineWidth: 2)
-//                )
-                Text("Level 1")
-                    .font(.system(size: 17, weight: .medium))
+                NavigationLink(destination: ChatView(), label: {
+                    Image(systemName: "text.bubble")
+                        .font(.system(size: 20))
+                        .padding(13)
+                        .background(Circle().stroke(Color.gray.opacity(0.2), lineWidth: 1.5))
+                        .foregroundColor(.black)
+                })
             }
-            .padding(20)
+            .padding(.horizontal, 20)
+            .padding(.top, 10)
             
             // Progress Chart
             ZStack {
@@ -152,13 +138,25 @@ struct CalorieChartView: View {
                 .offset(y: -30)
             }
             
-            // Makronutrisi Progress
             HStack(spacing: 45) {
                 MacronutrientView(name: "Protein", consumed: proteinConsumed, goal: proteinGoal, color: Color.colorGreenPrimary)
                 MacronutrientView(name: "Fats", consumed: fatConsumed, goal: fatGoal, color: Color.orangePrimary)
                 MacronutrientView(name: "Carbs", consumed: carbsConsumed, goal: carbsGoal, color: Color.yellow)
             }
             .offset(y: -60)
+            
+            VStack(alignment: .leading) {
+                Text("Track Your Daily\nIntake")
+                    .font(.system(size: 30))
+                    .fontWeight(.medium)
+                Text("Today Calories: \(Int(consumedCalories)) Kcal")
+                    .foregroundColor(Color.orangePrimary)
+                    .fontWeight(.semibold)
+                    .font(.system(size: 14))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)  // Menambahkan ini untuk memastikan teks berada di kiri
+            .offset(y: -50)
+            .padding(.leading, 20)
         }
     }
 }

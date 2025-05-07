@@ -6,41 +6,43 @@
 //
 
 import SwiftUI
+import SwiftData
+import Vision
+//import CoreML
 
 struct ContentView: View {
-    @State private var capturedImage: UIImage? = nil
+    @StateObject private var GMViewModel = GamificationViewModel()
+    @StateObject private var productViewModel = FoodProductViewModel()
+    @StateObject private var scanViewModel = ScanViewModel() // Tambahkan ini!
+
+    @Environment(\.modelContext) var context
+    @State private var isSelected: Int? = 1
     @State private var isPresenting: Bool = false
+    @State private var isPhotoLibrary: Bool = false
+    @State private var isSearchFood: Bool = false
+    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
+    @State private var isNavigatingToImageView = false
 
     var body: some View {
         ZStack {
-            TabView{
-                HomeScreen(isPresenting: $isPresenting, capturedImage: $capturedImage, classifier: ImageClassifier())
-                    .tabItem {
-                        Image("home")
-                    }
+            TabView {
+                HomeScreen()
+                    .tabItem { Image("home") }
+                    .onTapGesture { isSelected = 1 }
                 FoodHistoryView()
-                    .tabItem {
-                        Image("history")
-                    }
-                Button(action: {
-                    // Call the closure when the button is pressed
-                }){
-                    Image(systemName: "house")
-                    Text("Home")
-                }
-                GamificationView()
-                    .tabItem {
-                        Image("graph")
-                    }
+                    .tabItem { Image("history") }
+                    .onTapGesture { isSelected = 2 }
+                Text(" ") // Empty center tab
+                GamificationView(viewModel: GMViewModel)
+                    .tabItem { Image("graph") }
+                    .onTapGesture { isSelected = 3 }
                 ProfileView()
-                    .tabItem {
-                        Image("user")
-                        
-                    }
-                
+                    .tabItem { Image("user") }
+                    .onTapGesture { isSelected = 4 }
             }
             .accentColor(Color.colorGreenPrimary)
             .background(.white)
+
             VStack {
                 Spacer()
                 HStack {
@@ -50,18 +52,66 @@ struct ContentView: View {
                     }) {
                         Image(systemName: "plus")
                             .padding(15)
-                            .foregroundColor(Color.white)
-                            
+                            .foregroundColor(.white)
                     }
                     .frame(width: 55, height: 55)
                     .background(Color.colorGreenPrimary)
                     .cornerRadius(100)
                     .padding(.bottom, 20)
-                    
                     Spacer()
                 }
             }
+            NavigationStack {
+                EmptyView()
+                    .navigationDestination(isPresented: $isSearchFood) {
+                        FoodSearchView(isPresented: $isSearchFood, foods: productViewModel.products)
+                    }
+            }
         }
+        .confirmationDialog("Choose an option", isPresented: $isPresenting) {
+            Button("Camera") {
+                sourceType = .camera
+                isPhotoLibrary = true
+            }
+            Button("Photo Library") {
+                sourceType = .photoLibrary
+                isPhotoLibrary = true
+            }
+            Button("Search For Food") {
+                isSearchFood = true
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .sheet(isPresented: $isPhotoLibrary) {
+            ImagePicker(
+                uiImage: $scanViewModel.capturedImage,
+                isPresenting: $isPhotoLibrary,
+                sourceType: $sourceType
+            )
+            .onDisappear {
+                if scanViewModel.capturedImage != nil {
+                    scanViewModel.loadImage()
+                }
+            }
+        }
+        
+        .background(
+            NavigationLink(
+                destination: FoodDetectView(
+                    capturedImage: $scanViewModel.capturedImage,
+                    detectedObjects: $scanViewModel.detectedObjects,
+                    showResultSheet: $scanViewModel.showResultSheet
+                ),
+                isActive: $scanViewModel.showResultSheet
+            ) {
+                EmptyView()
+            }
+        )
+        .onAppear {
+            GMViewModel.context = context
+            productViewModel.loadJSON()
+        }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

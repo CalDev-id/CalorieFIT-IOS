@@ -106,7 +106,7 @@ struct WeightView: View {
                 Text("\(getWeight())")
                     .font(.system(size: 50, weight: .bold))
                     .foregroundColor(.white)
-                Text("cm")
+                Text("kg")
                     .foregroundColor(.white)
             }
             let pickerCount = 6

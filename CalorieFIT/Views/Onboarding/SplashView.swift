@@ -12,6 +12,10 @@ struct SplashView: View {
     
     var body: some View {
         VStack {
+            Image("calorify_logo_text")
+                .resizable()
+                .frame(width: 161, height: 161)
+                .offset(y: 20)
             Image("onboard")
             HStack {
                 Text("Track Your ")
@@ -61,8 +65,10 @@ struct SplashView: View {
                 showSplash = !showSplash
             }
         }
+        .edgesIgnoringSafeArea(.all)
         .frame(maxWidth: .infinity)
         .padding()
+        .offset(y:-50)
     }
 }
 

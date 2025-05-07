@@ -15,6 +15,7 @@ enum OnboardingStep {
     case height
     case weight
     case activity
+    case goal
 }
 
 struct OnboardingView: View {
@@ -24,15 +25,15 @@ struct OnboardingView: View {
     @State private var inputName: String = ""
     @State private var inputAge: Int?
     @State private var selectedGender: String = "Male"
-    @State private var progress: Double = 1 / 6.0
+    @State private var progress: Double = 1 / 7.0
     @State private var inputHeight: Double = 120
     @State private var inputWeight: Double = 40
     @State private var selectedActivity: Int = 1
+    @State private var selectedGoal: Int = 1
     
     @State private var showSplash: Bool = false
     
     @State private var isLoading: Bool = false
-//    @State private var isSaving: Bool = false
     
     @State private var progressLoading: CGFloat = 0.0
 
@@ -40,12 +41,12 @@ struct OnboardingView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [Users]
+    @Query private var progressList: [UserProgress]
 
     var body: some View {
         if !showSplash {
             SplashView(showSplash: $showSplash)
         } else if isLoading {
-//            LoadingView(isSaving: $isSaving)
             VStack {
                 Text("Personalizing Your Calorify \n Experience...")
                     .multilineTextAlignment(.center)
@@ -82,16 +83,23 @@ struct OnboardingView: View {
                         progressLoading += 0.01
                     } else {
                         timer.invalidate()
-                        let newUser = Users( // ✅ Buat objek Users
+                        let newUser = Users(
                             inputName: inputName,
                             inputAge: inputAge ?? 0,
                             selectedGender: selectedGender,
                             inputHeight: inputHeight,
                             inputWeight: inputWeight,
-                            selectedActivity: selectedActivity
+                            selectedActivity: selectedActivity,
+                            selectedGoal: selectedGoal
                         )
                         
                         userViewModel.addUserFirstTime(modelContext: modelContext, user: newUser)
+                        
+                        if progressList.isEmpty {
+                            let newProgress = UserProgress()
+                            modelContext.insert(newProgress)
+                            print("✅ UserProgress pertama dibuat.")
+                        }
                     }
                 }
             }
@@ -118,7 +126,7 @@ struct OnboardingView: View {
                     }
                     .frame(width: progressBarWidth)
                     
-                    Text("\(Int(progress * 6))/6")
+                    Text("\(Int(progress * 7))/7")
                         .font(.headline)
                         .padding(.leading)
                         .foregroundColor((step == .height || step == .weight) ? Color.white : Color.black)
@@ -147,11 +155,13 @@ struct OnboardingView: View {
                     WeightView(inputWeight: $inputWeight)
                 case .activity:
                     ActivityView(selectedActivity: $selectedActivity)
+                case .goal:
+                    GoalView(selectedGoal: $selectedGoal)
                 }
                 
                 Spacer()
                 
-                if step == .activity {
+                if step == .goal {
                     Group{
                         HStack {
                             Text("Submit")
@@ -183,6 +193,20 @@ struct OnboardingView: View {
             .navigationBarBackButtonHidden()
         }
     }
+    func updateProgress() {
+        let stepIndex: Int
+        switch step {
+        case .name: stepIndex = 0
+        case .age: stepIndex = 1
+        case .height: stepIndex = 2
+        case .weight: stepIndex = 3
+        case .gender: stepIndex = 4
+        case .activity: stepIndex = 5
+        case .goal: stepIndex = 6
+        }
+        progress = Double(stepIndex + 1) / 7.0
+    }
+
 
     func nextStep() {
         switch step {
@@ -196,15 +220,19 @@ struct OnboardingView: View {
             step = .gender
         case .gender:
             step = .activity
-            progress = 1.0
         case .activity:
+            step = .goal
+        case .goal:
             break
         }
-        progress = min(progress + (1 / 6.0), 1)
+        updateProgress()
     }
+
 
     func prevStep() {
         switch step {
+        case .goal:
+            step = .activity
         case .activity:
             step = .gender
         case .gender:
@@ -218,8 +246,10 @@ struct OnboardingView: View {
         case .name:
             break
         }
-        progress = max(progress - (1 / 6.0), 1 / 6.0)
+        updateProgress()
     }
+
+
 
     func getStepText() -> String {
         switch step {
@@ -235,6 +265,8 @@ struct OnboardingView: View {
             return "What’s your current weight right now?"
         case .activity:
             return "What's your activity level?"
+        case .goal:
+            return "What goal do you have in mind?"
         }
     }
 }

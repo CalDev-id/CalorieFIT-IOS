@@ -121,7 +121,7 @@
     },
     {
         "id": 16,
-        "food_name": "rendang daging",
+        "food_name": "rendang",
         "calory": 195,
         "protein": 19.68,
         "fat": 11.07,
@@ -177,6 +177,14 @@
     },
     {
         "id": 23,
+        "food_name": "telur",
+        "calory": 94,
+        "protein": 6.48,
+        "fat": 7.33,
+        "carbohydrate": 0.42
+    },
+    {
+        "id": 24,
         "food_name": "tempe goreng",
         "calory": 192,
         "protein": 11.31,
@@ -184,7 +192,7 @@
         "carbohydrate": 10.15
     },
     {
-        "id": 24,
+        "id": 25,
         "food_name": "udang goreng",
         "calory": 287,
         "protein": 10.58,

@@ -23,7 +23,7 @@ class NutritionDataManager {
         return formatter.string(from: Date())
     }
 
-    func updateOrInsertNutrition(food_name: String, calory: Double, protein: Double, fat: Double, carbohydrate: Double, image: UIImage?) {
+    func updateOrInsertNutrition(food_name: String, calory: Double, protein: Double, fat: Double, carbohydrate: Double, image: UIImage?, imageURL: String?) {
         let todayID = getCurrentDateID()
         print("🟢 Menyimpan data dengan ID: \(todayID)")
 
@@ -46,6 +46,11 @@ class NutritionDataManager {
                 )
                 context.insert(newNutrition)
                 // streak + 1
+                let fetchProgress = FetchDescriptor<UserProgress>()
+                if let updateProgress = try context.fetch(fetchProgress).first {
+                    updateProgress.streak += 1
+                    print("🔥 Streak +1")
+                }
                 
                 print("🆕 Data baru dibuat dan dimasukkan!")
             }
@@ -58,7 +63,8 @@ class NutritionDataManager {
                 protein: protein,
                 fat: fat,
                 carbohydrate: carbohydrate,
-                image: base64Image
+                image: base64Image,
+                imageURL: imageURL
             )
             context.insert(foodHistory)
             print("📜 FoodHistory berhasil disimpan.")

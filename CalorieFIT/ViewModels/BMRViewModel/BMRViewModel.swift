@@ -37,8 +37,20 @@ class BMRViewModel: ObservableObject {
     func calculateDailyCalories(user: Users) -> Double {
         let bmr = calculateBMR(user: user)
         let activityFactor = getActivityFactor(activityLevel: user.selectedActivity)
-        return bmr * activityFactor
+        let tdee = bmr * activityFactor  // Total Daily Energy Expenditure
+        
+        switch user.selectedGoal {
+        case 1: // Maintenance
+            return tdee
+        case 2: // Diet
+            return tdee * 0.8  // Potong 20%
+        case 3: // Bulking
+            return tdee * 1.2  // Tambah 20%
+        default:
+            return tdee
+        }
     }
+
     
     func determineWeightCategory(user: Users) -> String {
         let bmi = user.inputWeight / pow(user.inputHeight / 100, 2) // BMI = kg/m²
@@ -50,6 +62,10 @@ class BMRViewModel: ObservableObject {
         } else {
             return "Overweight"
         }
+    }
+    
+    func userBMI(user: Users) -> Double {
+        return user.inputWeight / pow(user.inputHeight / 100, 2)
     }
     
     func determineMacronutrients(user: Users) -> (protein: Double, fat: Double, carbs: Double) {
