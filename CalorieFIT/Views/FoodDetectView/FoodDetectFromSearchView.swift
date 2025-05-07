@@ -57,9 +57,10 @@ struct FoodDetectFromSearchView: View {
                 VStack {
                     HStack {
                         Button(action: {
-                            presentationMode.wrappedValue.dismiss()
-                            withAnimation {
-                                showResultSheet = false
+                            //ini gw tuker
+                            showResultSheet = false
+                            DispatchQueue.main.async {
+                                presentationMode.wrappedValue.dismiss()
                             }
                         }) {
                             Image(systemName: "arrow.left")
@@ -153,9 +154,13 @@ struct FoodDetectFromSearchView: View {
                             carbohydrate: carbs ?? 0
                         )
 
-                        dismiss()
-                        withAnimation {
-                            showResultSheet = false 
+//                        dismiss()
+//                        withAnimation {
+//                            showResultSheet = false 
+//                        }
+                        showResultSheet = false
+                        DispatchQueue.main.async {
+                            dismiss()
                         }
                     }
                 }
