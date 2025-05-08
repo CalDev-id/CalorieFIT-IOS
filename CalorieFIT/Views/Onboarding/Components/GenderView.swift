@@ -77,7 +77,7 @@ struct GenderView: View {
     }
 }
 
-#Preview {
-    @Previewable @State var selectedWeight: String = "ayam"
-    GenderView(selectedGender: $selectedWeight)
-}
+//#Preview {
+//    @Previewable @State var selectedWeight: String = "ayam"
+//    GenderView(selectedGender: $selectedWeight)
+//}

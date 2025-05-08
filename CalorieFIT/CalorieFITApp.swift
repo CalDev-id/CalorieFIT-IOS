@@ -45,5 +45,6 @@ struct ContentViewWrapper: View {
                 ContentView()
             }
         }
+        .preferredColorScheme(.light)
     }
 }

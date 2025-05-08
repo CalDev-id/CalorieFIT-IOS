@@ -20,14 +20,14 @@ enum OnboardingStep {
 
 struct OnboardingView: View {
     @StateObject private var userViewModel = UserViewModel()
-    
+    @State private var showAlert: Bool = false
     @State private var step: OnboardingStep = .name
     @State private var inputName: String = ""
     @State private var inputAge: Int?
     @State private var selectedGender: String = "Male"
     @State private var progress: Double = 1 / 7.0
-    @State private var inputHeight: Double = 120
-    @State private var inputWeight: Double = 40
+    @State private var inputHeight: Double = 160
+    @State private var inputWeight: Double = 50
     @State private var selectedActivity: Int = 1
     @State private var selectedGoal: Int = 1
     
@@ -180,6 +180,8 @@ struct OnboardingView: View {
                     .onTapGesture {
                         if (inputName != ""){
                             isLoading = true
+                        }else {
+                            showAlert = true
                         }
                     }
                 } else {
@@ -191,6 +193,11 @@ struct OnboardingView: View {
             .padding()
             .background(step == .height ? Color.greenSecondary : (step == .weight ? Color.colorOrangePrimary: Color.white))
             .navigationBarBackButtonHidden()
+            .alert("Missing Name", isPresented: $showAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("Please fill the name first.")
+            }
         }
     }
     func updateProgress() {
