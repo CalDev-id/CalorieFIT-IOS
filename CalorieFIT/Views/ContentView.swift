@@ -25,21 +25,26 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            TabView {
+            TabView(selection: $isSelected) {
                 HomeScreen()
-                    .tabItem { Image("home") }
-                    .onTapGesture { isSelected = 1 }
+                    .tabItem { Image(isSelected == 1 ? "Home2" : "home") }
+                    .tag(1)
+
                 FoodHistoryView()
-                    .tabItem { Image("history") }
-                    .onTapGesture { isSelected = 2 }
+                    .tabItem { Image(isSelected == 2 ? "history2" :"history") }
+                    .tag(2)
+
                 Text(" ") // Empty center tab
+                    .hidden()
                 GamificationView(viewModel: GMViewModel)
-                    .tabItem { Image("graph") }
-                    .onTapGesture { isSelected = 3 }
+                    .tabItem { Image(isSelected == 3 ? "Chart2": "graph") }
+                    .tag(3)
+
                 ProfileView()
-                    .tabItem { Image("user") }
-                    .onTapGesture { isSelected = 4 }
+                    .tabItem { Image(isSelected == 4 ? "User2" :"user") }
+                    .tag(4)
             }
+
             .accentColor(Color.colorGreenPrimary)
             .background(.white)
 
