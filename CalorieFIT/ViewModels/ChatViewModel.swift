@@ -43,7 +43,7 @@ class ChatViewModel: ObservableObject {
     
     
     func sendMessageToModel(userID: String, userPrompt: String) {
-        let url = URL(string: "https://calorifyflaskprod-production.up.railway.app/chatbot/")!
+        let url = URL(string: "http://127.0.0.1:8000/chatbot/")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

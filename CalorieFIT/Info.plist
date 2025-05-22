@@ -4,9 +4,9 @@
 <dict>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleSignature</key>
+	<string></string>
 </dict>
 </plist>
