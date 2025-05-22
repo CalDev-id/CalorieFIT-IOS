@@ -42,6 +42,8 @@ struct OnboardingView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [Users]
     @Query private var progressList: [UserProgress]
+    
+    @State private var navigateToContentView = false
 
     var body: some View {
         if !showSplash {
@@ -75,6 +77,9 @@ struct OnboardingView: View {
                     .multilineTextAlignment(.center)
                     .fontWeight(.light)
                     .foregroundColor(Color.gray)
+                NavigationLink(destination: ContentView(), isActive: $navigateToContentView) {
+                    EmptyView()
+                }
             }
             .padding()
             .onAppear {
@@ -100,6 +105,8 @@ struct OnboardingView: View {
                             modelContext.insert(newProgress)
                             print("✅ UserProgress pertama dibuat.")
                         }
+                        
+                        navigateToContentView = true
                     }
                 }
             }
