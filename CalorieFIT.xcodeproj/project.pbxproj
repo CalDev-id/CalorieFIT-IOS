@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		2EAFDFE12D804161005EAE6D /* Exceptions for "CalorieFIT" folder in "CalorieFIT" target */ = {
+		2EE1E6FF2DDEE29400111678 /* Exceptions for "CalorieFIT" folder in "CalorieFIT" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -24,7 +24,7 @@
 		2EAFDFD32D80415F005EAE6D /* CalorieFIT */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				2EAFDFE12D804161005EAE6D /* Exceptions for "CalorieFIT" folder in "CalorieFIT" target */,
+				2EE1E6FF2DDEE29400111678 /* Exceptions for "CalorieFIT" folder in "CalorieFIT" target */,
 			);
 			path = CalorieFIT;
 			sourceTree = "<group>";

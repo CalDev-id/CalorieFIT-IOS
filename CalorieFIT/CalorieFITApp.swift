@@ -33,7 +33,6 @@ struct CalorieFITApp: App {
         }
     }
 }
-
 struct ContentViewWrapper: View {
     @Query private var users: [Users]
 
@@ -48,3 +47,34 @@ struct ContentViewWrapper: View {
         .preferredColorScheme(.light)
     }
 }
+
+//struct ContentViewWrapper: View {
+//    @Environment(\.modelContext) private var context
+//    @State private var users: [Users] = []
+//
+//    var body: some View {
+//        NavigationStack {
+//            Group {
+//                if users.isEmpty {
+//                    OnboardingView()
+//                } else {
+//                    ContentView()
+//                }
+//            }
+//            .onAppear {
+//                fetchUsers()
+//            }
+//        }
+//        .preferredColorScheme(.light)
+//    }
+//
+//    private func fetchUsers() {
+//        let descriptor = FetchDescriptor<Users>()
+//        do {
+//            users = try context.fetch(descriptor)
+//        } catch {
+//            print("Failed to fetch users: \(error)")
+//        }
+//    }
+//}
+
