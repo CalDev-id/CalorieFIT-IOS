@@ -130,9 +130,9 @@ struct FoodDetectFromSearchView: View {
                     .foregroundColor(Color.gray)
                     .padding(.horizontal, 25)
 
-                    MacronutrientDetailView(image: "protein", name: "Protein", contain: (protein ?? 0), goal: proteinGoal, color: Color.green)
-                    MacronutrientDetailView(image: "carbs", name: "Carbs", contain: (carbs ?? 0), goal: carbsGoal, color: Color.yellow)
-                    MacronutrientDetailView(image: "fat", name: "Fat", contain: (fat ?? 0), goal: fatGoal, color: Color.orange)
+                    MacronutrientDetailView(image: "protein3", name: "Protein", contain: (protein ?? 0), goal: proteinGoal, color: Color.green)
+                    MacronutrientDetailView(image: "carbs2", name: "Carbs", contain: (carbs ?? 0), goal: carbsGoal, color: Color.yellow)
+                    MacronutrientDetailView(image: "fat2", name: "Fat", contain: (fat ?? 0), goal: fatGoal, color: Color.orange)
 
                     SecondaryBTN(name: "Confirm", color: Color.colorGreenPrimary) {
                         // Insert data directly

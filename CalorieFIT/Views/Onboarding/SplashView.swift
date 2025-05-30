@@ -16,7 +16,9 @@ struct SplashView: View {
                 .resizable()
                 .frame(width: 161, height: 161)
                 .offset(y: 20)
-            Image("onboard")
+            Image("splash")
+                .resizable()
+                .frame(width: 340, height: 340)
             HStack {
                 Text("Track Your ")
                     .font(.title)

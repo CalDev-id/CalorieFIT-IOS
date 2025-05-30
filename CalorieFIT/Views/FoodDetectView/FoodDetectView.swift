@@ -238,14 +238,20 @@ struct FoodDetectView: View {
                         if let matched = matchedNutrition {
                             VStack{
                                 //disini cuy
-                                MacronutrientDetailView(image: "protein", name: "Protein", contain: (matched.protein ?? 0), goal: proteinGoal, color: Color.green)
-                                MacronutrientDetailView(image: "carbs", name: "Carbs", contain: (matched.carbohydrate ?? 0), goal: carbsGoal, color: Color.yellow)
-                                MacronutrientDetailView(image: "fat", name: "Fat", contain: (matched.fat ?? 0), goal: fatGoal, color: Color.orange)
+                                MacronutrientDetailView(image: "protein3", name: "Protein", contain: (matched.protein ?? 0), goal: proteinGoal, color: Color.green)
+                                MacronutrientDetailView(image: "carbs2", name: "Carbs", contain: (matched.carbohydrate ?? 0), goal: carbsGoal, color: Color.yellow)
+                                MacronutrientDetailView(image: "fat2", name: "Fat", contain: (matched.fat ?? 0), goal: fatGoal, color: Color.orange)
                             }
                             
                         } else {
                             Text("Nutrition data not found.")
                                 .foregroundColor(.gray)
+                        }
+                        
+                        HStack{
+                            Text("Source of food data : ")
+                            Link("www.fatsecret.co.id", destination: URL(string: "https://www.fatsecret.co.id/kalori-gizi/")!)
+                                        .foregroundColor(.blue)
                         }
                         
                         SecondaryBTN(name: "Confirm", color: Color.colorGreenPrimary) {

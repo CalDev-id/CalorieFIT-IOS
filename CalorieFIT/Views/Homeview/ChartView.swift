@@ -76,6 +76,8 @@ struct CalorieChartView: View {
     var carbsProgress: Double {
         min(carbsConsumed / carbsGoal, 1.0)
     }
+    @State private var isShowBMR:Bool = false
+    @State private var showCitationSheet:Bool = false
     
     var body: some View {
         VStack {
@@ -108,9 +110,13 @@ struct CalorieChartView: View {
             ZStack {
                 HStack {
                     Spacer()
-                    Image("avocado")
+                    Image("apple")
+                        .resizable()
+                        .frame(width: 200, height: 200)
+                        .offset(x: 130)
+                        .rotationEffect(.degrees(-45))
                 }
-                .offset(y: -50)
+                .offset(y: 30)
                 
                 Circle()
                     .trim(from: 0.0, to: 0.5)
@@ -131,20 +137,87 @@ struct CalorieChartView: View {
                     Text("\(Int(consumedCalories)) Kcal")
                         .font(.system(size: 30))
                         .fontWeight(.semibold)
-                    Text("of \(Int(dailyCalorieGoal)) Kcal")
-                        .font(.title3)
-                        .foregroundColor(.gray.opacity(0.5))
+                    HStack{
+                        Text("of \(Int(dailyCalorieGoal)) Kcal")
+                            .font(.title3)
+                            .foregroundColor(.gray.opacity(0.5))
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.gray.opacity(0.5))
+                            .onTapGesture {
+                                isShowBMR = true
+                            }
+                    }
+                    
                 }
                 .offset(y: -30)
             }
-            
+            .sheet(isPresented: $isShowBMR) {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Daily Calorie Recommendation (BMR-based)")
+                        .font(.title2)
+                        .bold()
+                        .multilineTextAlignment(.leading)
+                        .padding(.top, 20)
+
+                    Text("“The daily calorie recommendation provided in this app is based on the Basal Metabolic Rate (BMR) calculation using the Mifflin-St Jeor Equation, which estimates the amount of energy expended while at rest. This method is widely used in clinical and nutritional settings.”")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.leading)
+
+                    Link("Read the full article", destination: URL(string: "https://doi.org/10.1093/ajcn/51.2.241")!)
+                        .font(.body)
+                        .foregroundColor(.blue)
+                    
+                    Spacer()
+                }
+                .padding()
+                .presentationDetents([.fraction(0.5)])
+                .presentationDragIndicator(.visible)
+            }
+
             HStack(spacing: 45) {
                 MacronutrientView(name: "Protein", consumed: proteinConsumed, goal: proteinGoal, color: Color.colorGreenPrimary)
                 MacronutrientView(name: "Fats", consumed: fatConsumed, goal: fatGoal, color: Color.orangePrimary)
                 MacronutrientView(name: "Carbs", consumed: carbsConsumed, goal: carbsGoal, color: Color.yellow)
             }
-            .offset(y: -60)
-            
+            .offset(y: -70)
+            HStack{
+                Spacer()
+                Button(action: {
+                    showCitationSheet = true
+                }) {
+                    Text("How we measure this recommendation?")
+                        .font(.footnote)
+                        .foregroundColor(.blue)
+                        .underline()
+                }
+            }
+            .padding(.trailing, 20)
+            .offset(y: -65)
+            .sheet(isPresented: $showCitationSheet) {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Macronutrient Recommendations (Protein, Fat, Carbohydrates)")
+                        .font(.title2)
+                        .bold()
+                        .multilineTextAlignment(.leading)
+                        .padding(.top, 20)
+
+                    Text("“The daily intake recommendations for macronutrients such as protein, fat, and carbohydrates are based on the Dietary Guidelines for Americans, 2020–2025, developed by the U.S. Department of Health and Human Services and the U.S. Department of Agriculture.”")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.leading)
+
+                    Link("Read the full article", destination: URL(string: "https://www.dietaryguidelines.gov/resources/2020-2025-dietary-guidelines-online-materials")!)
+                        .font(.body)
+                        .foregroundColor(.blue)
+                    
+                    Spacer()
+                }
+                .padding()
+                .presentationDetents([.fraction(0.5)])
+                .presentationDragIndicator(.visible)
+            }
+
             VStack(alignment: .leading) {
                 Text("Track Your Daily\nIntake")
                     .font(.system(size: 30))

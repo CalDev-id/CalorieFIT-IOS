@@ -13,6 +13,7 @@ struct ProfileView: View {
     @Query private var userProgress: [UserProgress]
     @StateObject private var bmrViewModel = BMRViewModel()
     @State private var isEditing: Bool = false
+    @State private var isShowBMI: Bool = false
     
     var body: some View {
         if let user = users.first {
@@ -25,6 +26,20 @@ struct ProfileView: View {
                     }
                     BMIBarView(bmi: bmrViewModel.userBMI(user: user))
                     DetailProfileView(user: user)
+                    
+                    HStack{
+                        Text("⚠️ Health Disclaimer")
+                            .bold()
+                        Spacer()
+                    }
+                    
+                    Text("The health-related information provided in this app is for general informational purposes only and is not intended as a substitute for professional medical advice, diagnosis, or treatment. Always consult with a qualified healthcare provider before making any significant changes to your diet, physical activity, or health routine.")
+                        .foregroundColor(.gray)
+                        .font(.caption)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(16)
+                        .shadow(radius: 1)
                 }
                 .padding(.horizontal)
                 .background(.white)
@@ -289,9 +304,19 @@ struct ProfileView: View {
     // MARK: - BMI Bar
     @ViewBuilder
     private func BMIBarView(bmi: Double) -> some View {
+        
+        
         VStack(alignment: .leading, spacing: 12) {
-            Text("Current BMI")
-                .font(.headline)
+            HStack{
+                Text("Current BMI")
+                    .font(.headline)
+                Image(systemName: "info.circle")
+                    .foregroundColor(.gray.opacity(0.5))
+                    .onTapGesture {
+                        isShowBMI = true
+                    }
+            }
+            
             
             HStack {
                 Text("\(bmi, specifier: "%.1f")")
@@ -323,7 +348,29 @@ struct ProfileView: View {
                 }
                 .frame(height: 20)
             }
-            
+            .sheet(isPresented: $isShowBMI){
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Body Mass Index (BMI)")
+                        .font(.title2)
+                        .bold()
+                        .multilineTextAlignment(.leading)
+                        .padding(.top, 20)
+
+                    Text("“The Body Mass Index (BMI) calculation and classification used in this app follow the guidelines set by the World Health Organization (WHO). BMI is a widely used screening tool to categorize weight status based on height and weight.”")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.leading)
+
+                    Link("Read the full article", destination: URL(string: "https://www.who.int/publications/i/item/9241208945")!)
+                        .font(.body)
+                        .foregroundColor(.blue)
+                    
+                    Spacer()
+                }
+                .padding()
+                .presentationDetents([.fraction(0.5)])
+                .presentationDragIndicator(.visible)
+            }
             HStack {
                 HStack{
                     Rectangle()

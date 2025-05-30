@@ -153,9 +153,9 @@
 				INFOPLIST_FILE = CalorieFIT/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Calorify;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Access Camera";
+				INFOPLIST_KEY_NSCameraUsageDescription = "access camera to detect food";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "access photo library to detect food";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -190,9 +190,9 @@
 				INFOPLIST_FILE = CalorieFIT/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Calorify;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Access Camera";
+				INFOPLIST_KEY_NSCameraUsageDescription = "access camera to detect food";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "access photo library to detect food";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
